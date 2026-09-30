@@ -4,6 +4,7 @@ package org.example.smartbiobackend.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -25,7 +26,8 @@ public class User {
     private String password;
 
     @OneToMany
-    Set<Role> roles;
+    @JoinColumn(name = "role_id")
+    Set<Role> roles = new HashSet<>();
 
     public String getName() {
         return name;
