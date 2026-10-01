@@ -5,29 +5,27 @@ import jakarta.persistence.*;
 @Entity
 public class Seat {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(nullable = false)
-    private String seatCode;
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   private int id;
 
    @ManyToOne
    @JoinColumn
    private Auditorium auditorium;
 
-    public Seat() {
-    }
+   @Column(nullable = false)
+   private String seatCode;
 
-    public Seat(String seatCode) {
-        this.seatCode = seatCode;
-    }
+   public Seat() {
+   }
 
-    public String getSeatCode() {
-        return seatCode;
-    }
-   
+   public Seat(String seatCode) {
+      this.seatCode = seatCode;
+   }
 
+   public String getSeatCode() {
+      return seatCode;
+   }
 
    public Seat(int id, Auditorium auditorium, String seatCode) {
       this.id = id;
@@ -35,12 +33,10 @@ public class Seat {
       this.seatCode = seatCode;
    }
 
-
    public Seat(Auditorium auditorium, String seatCode) {
       this.auditorium = auditorium;
       this.seatCode = seatCode;
    }
-
 
    public int getId() {
       return id;
@@ -58,8 +54,6 @@ public class Seat {
       this.auditorium = auditorium;
    }
 
-
-
    public void setSeatCode(String seatCode) {
       this.seatCode = seatCode;
    }
@@ -67,10 +61,9 @@ public class Seat {
    @Override
    public String toString() {
       return "Seat{" +
-              "id=" + id +
-              ", auditorium=" + auditorium +
-              ", seatCode='" + seatCode + '\'' +
-              '}';
+            "id=" + id +
+            ", auditorium=" + auditorium +
+            ", seatCode='" + seatCode + '\'' +
+            '}';
    }
-
 }

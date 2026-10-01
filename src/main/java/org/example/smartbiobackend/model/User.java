@@ -27,11 +27,7 @@ public class User {
     private String password;
 
     @OneToMany
-<<<<<<< HEAD
-    @JoinColumn(name = "user_id")
-=======
     @JoinColumn
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
     Set<Role> roles = new HashSet<>();
 
     /***
