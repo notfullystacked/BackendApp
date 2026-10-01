@@ -3,7 +3,7 @@ package org.example.smartbiobackend.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 public class Showing {
@@ -21,9 +21,9 @@ public class Showing {
 
     private LocalDate date;
 
-    private LocalTime startTime;
+    private LocalDateTime startTime;
 
-    public Showing(int id, Auditorium auditorium, Movie movie, LocalDate date, LocalTime startTime) {
+    public Showing(int id, Auditorium auditorium, Movie movie, LocalDate date, LocalDateTime startTime) {
         this.id = id;
         this.auditorium = auditorium;
         this.movie = movie;
@@ -35,19 +35,12 @@ public class Showing {
 
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalTime getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
@@ -59,6 +52,21 @@ public class Showing {
         this.id = showingId;
     }
 
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public Showing(Auditorium auditorium, Movie movie, LocalDate date, LocalDateTime startTime) {
+        this.auditorium = auditorium;
+        this.movie = movie;
+        this.date = date;
+        this.startTime = startTime;
+    }
     public Movie getMovie() {
         return movie;
     }
@@ -74,7 +82,6 @@ public class Showing {
     public void setAuditorium(Auditorium auditorium) {
         this.auditorium = auditorium;
     }
-
     @Override
     public String toString() {
         return "Showing{" +

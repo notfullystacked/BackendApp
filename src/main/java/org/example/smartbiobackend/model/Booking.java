@@ -1,16 +1,18 @@
 package org.example.smartbiobackend.model;
 
 import jakarta.persistence.*;
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> c8605fe (added repositories, added an initial data config to show a booking, starting on controller from now on)
 import java.util.ArrayList;
 import java.util.List;
 
->>>>>>> ed37f68 (ISSUE-15: feat: add ticket retrieval endpoint)
 @Entity
 public class Booking {
 
@@ -18,7 +20,6 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-<<<<<<< HEAD
     @ManyToOne
     @JoinColumn
     private Showing showing;
@@ -37,6 +38,7 @@ public class Booking {
         this.seat = seat;
     }
 
+<<<<<<< HEAD
 
 
     @Column(nullable = false)
@@ -53,11 +55,9 @@ public class Booking {
         this.showing = showing;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
-
 =======
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "showing_id", nullable = false)
-    private Showing showing;
+>>>>>>> c8605fe (added repositories, added an initial data config to show a booking, starting on controller from now on)
+
 
     @Column(nullable = false)
     private String customerName;
@@ -68,21 +68,17 @@ public class Booking {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<BookingSeat> bookingSeats = new ArrayList<>();
 
-    public Booking() {
-    }
 
     public Booking(Showing showing, String customerName, String customerEmail) {
         this.showing = showing;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
->>>>>>> ed37f68 (ISSUE-15: feat: add ticket retrieval endpoint)
     }
 
     public int getId() {
         return id;
     }
 
-<<<<<<< HEAD
     public void setId(int bookingId) {
         this.id = bookingId;
     }
@@ -95,13 +91,10 @@ public class Booking {
         this.user = user;
     }
 
-=======
->>>>>>> ed37f68 (ISSUE-15: feat: add ticket retrieval endpoint)
     public Showing getShowing() {
         return showing;
     }
 
-<<<<<<< HEAD
     public void setShowing(Showing showing) {
         this.showing = showing;
     }
@@ -123,6 +116,7 @@ public class Booking {
                 '}';
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
 =======
 }
@@ -141,3 +135,7 @@ public class Booking {
 }
 >>>>>>> ed37f68 (ISSUE-15: feat: add ticket retrieval endpoint)
 >>>>>>> b87b4a2 (ISSUE-15: feat: add ticket retrieval endpoint)
+=======
+
+}
+>>>>>>> c8605fe (added repositories, added an initial data config to show a booking, starting on controller from now on)

@@ -14,7 +14,6 @@ public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String name;
 
     // In seconds
@@ -65,6 +64,7 @@ public class Movie {
 
     public void setId(int movieId) {
         this.id = movieId;
+    
     }
 
 
