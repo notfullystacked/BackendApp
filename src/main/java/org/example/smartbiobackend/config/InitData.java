@@ -50,7 +50,7 @@ public class InitData implements CommandLineRunner {
                 LocalDate.of(1975,6,20), 18);
 
         movieRepository.save(movie);
-        Auditorium auditorium = new Auditorium("Thriller Scene");
+        Auditorium auditorium = new Auditorium("Horror Auditorium");
         auditoriumRepository.save(auditorium);
         Showing showing = new Showing();
         showing.setAuditorium(auditorium);

@@ -1,0 +1,11 @@
+###
+POST http://localhost:8080/reserve
+Content-Type: application/json
+
+{
+  "seatCode": "1b",
+  "userId": null,
+  "guestName": "David",
+  "guestMail": "Thomassen@email.dk",
+  "showingId": 1
+}
