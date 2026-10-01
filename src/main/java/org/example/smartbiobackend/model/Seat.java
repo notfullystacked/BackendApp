@@ -1,19 +1,25 @@
 package org.example.smartbiobackend.model;
 
-
 import jakarta.persistence.*;
 
 @Entity
 public class Seat {
 
-   @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private int seatId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-   @ManyToOne
-   @JoinColumn(name = "auditorium_id")
-   private Auditorium auditorium;
+    @Column(nullable = false)
+    private String seatCode;
 
-   private String seatCode;
+    public Seat() {
+    }
 
+    public Seat(String seatCode) {
+        this.seatCode = seatCode;
+    }
+
+    public String getSeatCode() {
+        return seatCode;
+    }
 }

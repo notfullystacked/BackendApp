@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "users") // I had to rename it because SQL is confusing and I think it has a keyword called User.
 public class User {
 
     @Id
@@ -26,7 +27,7 @@ public class User {
     private String password;
 
     @OneToMany
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "user_id")
     Set<Role> roles = new HashSet<>();
 
     public String getName() {

@@ -3,7 +3,7 @@ package org.example.smartbiobackend.model;
 import jakarta.persistence.*;
 
 @Entity
-public class Auditorium {
+public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,10 +12,10 @@ public class Auditorium {
     @Column(nullable = false)
     private String name;
 
-    public Auditorium() {
+    public Movie() {
     }
 
-    public Auditorium(String name) {
+    public Movie(String name) {
         this.name = name;
     }
 
