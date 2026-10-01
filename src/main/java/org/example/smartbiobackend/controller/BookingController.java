@@ -1,6 +1,5 @@
 package org.example.smartbiobackend.controller;
 
-<<<<<<< HEAD
 import org.example.smartbiobackend.model.dto.BookingRequest;
 import org.example.smartbiobackend.model.dto.BookingResponse;
 import org.example.smartbiobackend.service.BookingService;

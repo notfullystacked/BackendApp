@@ -1,27 +1,12 @@
 package org.example.smartbiobackend.model;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.time.LocalDate;
-=======
-import jakarta.persistence.*;
->>>>>>> ed37f68 (ISSUE-15: feat: add ticket retrieval endpoint)
-=======
-import jakarta.persistence.*;
-=======
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
-import java.time.LocalDate;
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
->>>>>>> 359cbcc (added repositories, added an initial data config to show a booking, starting on controller from now on)
 
 @Entity
 public class Movie {
@@ -30,8 +15,6 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     private String name;
 
     // In seconds
@@ -82,84 +65,13 @@ public class Movie {
 
     public void setId(int movieId) {
         this.id = movieId;
-=======
-=======
->>>>>>> 359cbcc (added repositories, added an initial data config to show a booking, starting on controller from now on)
-    @Column(nullable = false)
-    private String name;
-
-    public Movie() {
     }
 
-    public Movie(String name) {
-        this.name = name;
-<<<<<<< HEAD
->>>>>>> ed37f68 (ISSUE-15: feat: add ticket retrieval endpoint)
-=======
-=======
-    private String name;
-
-    // In seconds
-    private int runTime;
-
-    private String description;
-
-    private int imdb_rating;
-
-    private String director;
-
-    private int releaseYear;
-
-    private LocalDate releaseDate;
-
-    private int ageRestriction;
-
-
-    // Constructor without imdb rating for now
-    public Movie(int id, String name, int runTime, String description, String director, int releaseYear, LocalDate releaseDate, int ageRestriction) {
-        this.id = id;
-        this.name = name;
-        this.runTime = runTime;
-        this.description = description;
-        this.director = director;
-        this.releaseYear = releaseYear;
-        this.releaseDate = releaseDate;
-        this.ageRestriction = ageRestriction;
-    }
-
-    public Movie() {
-
-    }
-
-    public Movie(String movieName, int runtime, String description, String director, int releaseYear, LocalDate releaseDate, int ageRestriction) {
-        this.name = movieName;
-        this.runTime = runtime;
-        this.description = description;
-        this.director = director;
-        this.releaseYear = releaseYear;
-        this.releaseDate = releaseDate;
-        this.ageRestriction = ageRestriction;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int movieId) {
-        this.id = movieId;
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
->>>>>>> 359cbcc (added repositories, added an initial data config to show a booking, starting on controller from now on)
-    }
 
     public String getName() {
         return name;
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-}
-=======
->>>>>>> 359cbcc (added repositories, added an initial data config to show a booking, starting on controller from now on)
+
 
     public void setName(String name) {
         this.name = name;
@@ -236,10 +148,4 @@ public class Movie {
                 '}';
     }
 }
-<<<<<<< HEAD
-=======
-}
->>>>>>> ed37f68 (ISSUE-15: feat: add ticket retrieval endpoint)
-=======
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
->>>>>>> 359cbcc (added repositories, added an initial data config to show a booking, starting on controller from now on)
+

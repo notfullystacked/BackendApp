@@ -2,9 +2,8 @@ package org.example.smartbiobackend.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 public class Showing {
@@ -12,43 +11,28 @@ public class Showing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "movie_id", nullable = false)
-    private Movie movie;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "auditorium_id", nullable = false)
+    @ManyToOne
+    @JoinColumn
     private Auditorium auditorium;
 
-    @Column(name = "start_time")
-    private LocalDateTime startTime;
+    @ManyToOne
+    @JoinColumn
+    private Movie movie;
 
     private LocalDate date;
 
-    public Showing() {
-    }
+    private LocalTime startTime;
 
-    public Showing(Movie movie) {
-        this.movie = movie;
-    }
-
-    public Showing(Movie movie, LocalDateTime startTime) {
-        this.movie = movie;
-        this.startTime = startTime;
-    }
-
-    public Showing(Movie movie, Auditorium auditorium, LocalDateTime startTime) {
-        this.movie = movie;
-        this.auditorium = auditorium;
-        this.startTime = startTime;
-    }
-
-    public Showing(int id, Auditorium auditorium, Movie movie, LocalDate date, LocalDateTime startTime) {
+    public Showing(int id, Auditorium auditorium, Movie movie, LocalDate date, LocalTime startTime) {
         this.id = id;
         this.auditorium = auditorium;
         this.movie = movie;
         this.date = date;
         this.startTime = startTime;
+    }
+
+    public Showing() {
+
     }
 
     public LocalDate getDate() {
@@ -59,7 +43,11 @@ public class Showing {
         this.date = date;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
@@ -81,10 +69,6 @@ public class Showing {
 
     public Auditorium getAuditorium() {
         return auditorium;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
     }
 
     public void setAuditorium(Auditorium auditorium) {

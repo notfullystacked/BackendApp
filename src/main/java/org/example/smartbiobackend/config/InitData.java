@@ -4,15 +4,7 @@ package org.example.smartbiobackend.config;
 import org.example.smartbiobackend.model.*;
 import org.example.smartbiobackend.repository.*;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.cglib.core.Local;
-import org.example.smartbiobackend.model.*;
-import org.example.smartbiobackend.repository.*;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Configuration;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -38,28 +30,7 @@ public class InitData implements CommandLineRunner {
         this.bookingRepository = bookingRepository;
     }
 
-public class InitData implements CommandLineRunner {
-
-    private final UserRepository userRepository;
-    private final MovieRepository movieRepository;
-    private final AuditoriumRepository auditoriumRepository;
-    private final SeatRepository seatRepository;
-    private final ShowingRepository showingRepository;
-    private final RoleRepository roleRepository;
-    private final BookingRepository bookingRepository;
-
-    public InitData(UserRepository userRepository, MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, SeatRepository seatRepository, ShowingRepository showingRepository, RoleRepository roleRepository, BookingRepository bookingRepository) {
-        this.userRepository = userRepository;
-        this.movieRepository = movieRepository;
-        this.auditoriumRepository = auditoriumRepository;
-        this.seatRepository = seatRepository;
-        this.showingRepository = showingRepository;
-        this.roleRepository = roleRepository;
-        this.bookingRepository = bookingRepository;
-    }
-
     @Override
-    public void run(String... args) throws Exception {
     public void run(String... args) throws Exception {
         // Steps:
         // Create x Users
@@ -78,7 +49,7 @@ public class InitData implements CommandLineRunner {
                 LocalDate.of(1975,6,20), 18);
 
         movieRepository.save(movie);
-        Auditorium auditorium = new Auditorium("Horror Auditorium");
+        Auditorium auditorium = new Auditorium("Thriller Scene");
         auditoriumRepository.save(auditorium);
         Showing showing = new Showing();
         showing.setAuditorium(auditorium);
