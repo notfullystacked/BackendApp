@@ -1,21 +1,11 @@
 package org.example.smartbiobackend.model;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-import jakarta.persistence.*;
-=======
-=======
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.time.LocalDate;
-<<<<<<< HEAD
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
-=======
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
 
 @Entity
 public class Movie {
@@ -24,19 +14,6 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    @Column(nullable = false)
-    private String name;
-
-    public Movie() {
-    }
-
-    public Movie(String name) {
-        this.name = name;
-=======
-=======
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
     private String name;
 
     // In seconds
@@ -87,21 +64,11 @@ public class Movie {
 
     public void setId(int movieId) {
         this.id = movieId;
-<<<<<<< HEAD
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
-=======
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
     }
 
     public String getName() {
         return name;
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-}
-=======
-=======
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
 
     public void setName(String name) {
         this.name = name;
@@ -178,7 +145,3 @@ public class Movie {
                 '}';
     }
 }
-<<<<<<< HEAD
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
-=======
->>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
