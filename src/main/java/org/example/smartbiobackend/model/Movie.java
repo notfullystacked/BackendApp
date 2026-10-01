@@ -1,11 +1,15 @@
 package org.example.smartbiobackend.model;
 
+<<<<<<< HEAD
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.time.LocalDate;
+=======
+import jakarta.persistence.*;
+>>>>>>> ed37f68 (ISSUE-15: feat: add ticket retrieval endpoint)
 
 @Entity
 public class Movie {
@@ -14,6 +18,7 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+<<<<<<< HEAD
     private String name;
 
     // In seconds
@@ -64,11 +69,22 @@ public class Movie {
 
     public void setId(int movieId) {
         this.id = movieId;
+=======
+    @Column(nullable = false)
+    private String name;
+
+    public Movie() {
+    }
+
+    public Movie(String name) {
+        this.name = name;
+>>>>>>> ed37f68 (ISSUE-15: feat: add ticket retrieval endpoint)
     }
 
     public String getName() {
         return name;
     }
+<<<<<<< HEAD
 
     public void setName(String name) {
         this.name = name;
@@ -145,3 +161,6 @@ public class Movie {
                 '}';
     }
 }
+=======
+}
+>>>>>>> ed37f68 (ISSUE-15: feat: add ticket retrieval endpoint)

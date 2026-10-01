@@ -26,6 +26,8 @@ public class Seat {
     public String getSeatCode() {
         return seatCode;
     }
+   
+
 
    public Seat(int id, Auditorium auditorium, String seatCode) {
       this.id = id;
@@ -72,4 +74,3 @@ public class Seat {
    }
 
 }
-   
