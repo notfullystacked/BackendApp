@@ -35,7 +35,7 @@ jobs:
 
     # 3. Run Maven tests with the docker profile active
       - name: Build and Test with Maven
-        run: mvn test
+        run: mvn test -Dspring.profiles.active=docker
 
     # 4. Cleanup containers after test execution
       - name: Stop Docker Compose
