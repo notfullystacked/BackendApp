@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: the_db
+    container_name: kinodb_mysql
     image: mysql:8.0
 
     restart: unless-stopped
