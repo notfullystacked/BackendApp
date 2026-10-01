@@ -13,10 +13,14 @@ public class Seat {
    @JoinColumn
    private Auditorium auditorium;
 <<<<<<< HEAD
+<<<<<<< HEAD
    
 =======
 
 >>>>>>> 9810903 (added repositories, added an initial data config to show a booking, starting on controller from now on)
+=======
+   
+>>>>>>> 4413c94 (ISSUE-15: feat: add ticket retrieval endpoint)
    @Column(nullable = false)
    private String seatCode;
 
@@ -38,6 +42,7 @@ public class Seat {
       this.auditorium = auditorium;
       this.seatCode = seatCode;
    }
+
 
    public int getId() {
       return id;
