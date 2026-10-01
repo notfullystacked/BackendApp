@@ -15,19 +15,16 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
-    private String name;
-
-    public Movie() {
-    }
 
     public Movie(String name) {
         this.name = name;
     }
 
-
     // In seconds
     private int runTime;
+
+    @Column(nullable = false)
+    private String name;
 
     private String description;
 

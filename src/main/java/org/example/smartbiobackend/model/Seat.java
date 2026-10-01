@@ -15,6 +15,11 @@ public class Seat {
    
    @Column(nullable = false)
    private String seatCode;
+  
+    public Seat(String seatCode) {
+        this.seatCode = seatCode;
+    }
+
 
    public Seat(int id, Auditorium auditorium, String seatCode) {
       this.id = id;
@@ -66,4 +71,3 @@ public class Seat {
             '}';
    }
 }
-   
