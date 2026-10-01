@@ -7,8 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-
+import java.time.LocalDateTime;
 @Configuration
 public class InitData implements CommandLineRunner {
 
@@ -49,12 +48,12 @@ public class InitData implements CommandLineRunner {
                 LocalDate.of(1975,6,20), 18);
 
         movieRepository.save(movie);
-        Auditorium auditorium = new Auditorium("Horror Auditorium");
+        Auditorium auditorium = new Auditorium("Thriller Scene");
         auditoriumRepository.save(auditorium);
         Showing showing = new Showing();
         showing.setAuditorium(auditorium);
         showing.setMovie(movie);
-        showing.setStartTime(LocalTime.now());
+        showing.setStartTime(LocalDateTime.now());
         showing.setDate(LocalDate.now());
         showingRepository.save(showing);
 

@@ -1,6 +1,7 @@
 package org.example.smartbiobackend.model;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +15,16 @@ public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(nullable = false)
     private String name;
+
+    public Movie() {
+    }
+
+    public Movie(String name) {
+        this.name = name;
+    }
 
     // In seconds
     private int runTime;
@@ -44,10 +54,6 @@ public class Movie {
         this.ageRestriction = ageRestriction;
     }
 
-    public Movie() {
-
-    }
-
     public Movie(String movieName, int runtime, String description, String director, int releaseYear, LocalDate releaseDate, int ageRestriction) {
         this.name = movieName;
         this.runTime = runtime;
@@ -61,7 +67,6 @@ public class Movie {
     public int getId() {
         return id;
     }
-
     public void setId(int movieId) {
         this.id = movieId;
     
@@ -71,7 +76,6 @@ public class Movie {
     public String getName() {
         return name;
     }
-
 
     public void setName(String name) {
         this.name = name;
