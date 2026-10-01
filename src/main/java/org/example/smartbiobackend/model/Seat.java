@@ -12,14 +12,17 @@ public class Seat {
    @ManyToOne
    @JoinColumn
    private Auditorium auditorium;
+<<<<<<< HEAD
    
+=======
+
+>>>>>>> 9810903 (added repositories, added an initial data config to show a booking, starting on controller from now on)
    @Column(nullable = false)
    private String seatCode;
-  
-    public Seat(String seatCode) {
-        this.seatCode = seatCode;
-    }
 
+   public Seat(String seatCode) {
+      this.seatCode = seatCode;
+   }
 
    public Seat(int id, Auditorium auditorium, String seatCode) {
       this.id = id;
@@ -35,7 +38,6 @@ public class Seat {
       this.auditorium = auditorium;
       this.seatCode = seatCode;
    }
-
 
    public int getId() {
       return id;

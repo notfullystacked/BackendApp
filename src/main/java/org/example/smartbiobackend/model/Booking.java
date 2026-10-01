@@ -23,6 +23,11 @@ public class Booking {
     @JoinColumn(name = "seat_id")
     private Seat seat;
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 9810903 (added repositories, added an initial data config to show a booking, starting on controller from now on)
     public Booking(Showing showing, User user, Seat seat) {
         this.showing = showing;
         this.user = user;

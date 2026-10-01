@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
 import java.time.LocalDate;
 
 @Entity
@@ -20,11 +19,11 @@ public class Movie {
         this.name = name;
     }
 
-    // In seconds
-    private int runTime;
-
     @Column(nullable = false)
     private String name;
+
+    // in seconds
+    private int runTime;
 
     private String description;
 
@@ -51,23 +50,16 @@ public class Movie {
         this.ageRestriction = ageRestriction;
     }
 
-    public Movie(String movieName, int runtime, String description, String director, int releaseYear, LocalDate releaseDate, int ageRestriction) {
-        this.name = movieName;
-        this.runTime = runtime;
-        this.description = description;
-        this.director = director;
-        this.releaseYear = releaseYear;
-        this.releaseDate = releaseDate;
-        this.ageRestriction = ageRestriction;
+
+
+
+    public Movie() {
+
     }
 
     public int getId() {
         return id;
     }
-    public void setId(int movieId) {
-        this.id = movieId;
-    }
-
 
     public String getName() {
         return name;
@@ -75,14 +67,6 @@ public class Movie {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getRunTime() {
-        return runTime;
-    }
-
-    public void setRunTime(int runTime) {
-        this.runTime = runTime;
     }
 
     public String getDescription() {
@@ -148,4 +132,3 @@ public class Movie {
                 '}';
     }
 }
-
