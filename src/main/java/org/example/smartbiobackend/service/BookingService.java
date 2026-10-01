@@ -31,6 +31,7 @@ public class BookingService {
         this.seatRepository = seatRepository;
         this.showingRepository = showingRepository;
     }
+
     @Transactional
     public BookingResponse processBooking(BookingRequest request) {
         // 1. Fetch referenced entities
