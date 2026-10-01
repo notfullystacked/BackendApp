@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mydb
+      MYSQL_DATABASE: kinoDB
       MYSQL_USER: user
       MYSQL_PASSWORD: secret
       SPRING_PROFILES_ACTIVE: docker
