@@ -1,6 +1,5 @@
 package org.example.smartbiobackend.model;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +24,7 @@ public class Movie {
     public Movie(String name) {
         this.name = name;
     }
+
 
     // In seconds
     private int runTime;
@@ -69,7 +69,6 @@ public class Movie {
     }
     public void setId(int movieId) {
         this.id = movieId;
-    
     }
 
 
