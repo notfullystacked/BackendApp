@@ -13,12 +13,12 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private int id;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     private LocalDate birthday;
@@ -27,8 +27,29 @@ public class User {
     private String password;
 
     @OneToMany
+<<<<<<< HEAD
     @JoinColumn(name = "user_id")
+=======
+    @JoinColumn
+>>>>>>> cb0364a (added repositories, added an initial data config to show a booking, starting on controller from now on)
     Set<Role> roles = new HashSet<>();
+
+    /***
+    Constructor without password for initial creation
+     */
+    public User(int userId, String name, String email, LocalDate birthday) {
+        this.id = userId;
+        this.name = name;
+        this.email = email;
+        this.birthday = birthday;
+    }
+
+    public User(String name, String email, LocalDate birthday) {
+        this.name = name;
+        this.email = email;
+        this.birthday = birthday;
+
+    }
 
     public String getName() {
         return name;
@@ -60,5 +81,16 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "roles=" + roles +
+                ", birthday=" + birthday +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", id=" + id +
+                '}';
     }
 }
