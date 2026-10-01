@@ -17,4 +17,4 @@ services:
 
 volumes:
   db_data:
-    name: the_db_volume # Just for demo purpose
+    name: the_db_volume
