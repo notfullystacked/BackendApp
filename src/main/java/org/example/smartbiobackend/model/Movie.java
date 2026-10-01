@@ -14,7 +14,6 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-
     public Movie(String name) {
         this.name = name;
     }
@@ -38,7 +37,8 @@ public class Movie {
     private int ageRestriction;
 
     // Constructor without imdb rating for now
-    public Movie(int id, String name, int runTime, String description, String director, int releaseYear, LocalDate releaseDate, int ageRestriction) {
+    public Movie(int id, String name, int runTime, String description, String director, int releaseYear,
+            LocalDate releaseDate, int ageRestriction) {
         this.id = id;
         this.name = name;
         this.runTime = runTime;
@@ -50,6 +50,10 @@ public class Movie {
     }
 
     public Movie() {
+    }
+
+    public Movie(String string, int i, String string2, String string3, int j, LocalDate of, int k) {
+        //TODO Auto-generated constructor stub
     }
 
     public void setId(int movieId) {

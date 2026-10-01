@@ -10,9 +10,7 @@ public class Seat {
 
    @ManyToOne
    @JoinColumn
-   private Auditorium auditorium;
-   
-   
+   private Auditorium auditorium; 
    @Column(nullable = false)
    private String seatCode;
 
@@ -59,6 +57,7 @@ public class Seat {
    public void setSeatCode(String seatCode) {
       this.seatCode = seatCode;
    }
+
 
    @Override
    public String toString() {

@@ -1,4 +1,4 @@
-package org.example.smartbiobackend.dto;
+package org.example.smartbiobackend.model.dto;
 
 public class TicketSeatDTO {
 

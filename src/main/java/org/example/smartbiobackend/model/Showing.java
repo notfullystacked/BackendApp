@@ -67,6 +67,10 @@ public class Showing {
         this.date = date;
         this.startTime = startTime;
     }
+    public Showing(Movie movie2, Auditorium auditorium2, LocalDateTime of) {
+        //TODO Auto-generated constructor stub
+    }
+
     public Movie getMovie() {
         return movie;
     }

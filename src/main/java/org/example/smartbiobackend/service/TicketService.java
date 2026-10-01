@@ -1,8 +1,8 @@
 package org.example.smartbiobackend.service;
 
-import org.example.smartbiobackend.dto.TicketDTO;
-import org.example.smartbiobackend.dto.TicketSeatDTO;
 import org.example.smartbiobackend.model.Booking;
+import org.example.smartbiobackend.model.dto.TicketDTO;
+import org.example.smartbiobackend.model.dto.TicketSeatDTO;
 import org.example.smartbiobackend.repository.BookingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

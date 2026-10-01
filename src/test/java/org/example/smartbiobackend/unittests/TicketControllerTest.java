@@ -1,8 +1,8 @@
 package org.example.smartbiobackend.unittests;
 
 import org.example.smartbiobackend.controller.TicketController;
-import org.example.smartbiobackend.dto.TicketDTO;
-import org.example.smartbiobackend.dto.TicketSeatDTO;
+import org.example.smartbiobackend.model.dto.TicketDTO;
+import org.example.smartbiobackend.model.dto.TicketSeatDTO;
 import org.example.smartbiobackend.service.TicketService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

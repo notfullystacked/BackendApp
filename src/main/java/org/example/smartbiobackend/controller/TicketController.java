@@ -1,6 +1,6 @@
 package org.example.smartbiobackend.controller;
 
-import org.example.smartbiobackend.dto.TicketDTO;
+import org.example.smartbiobackend.model.dto.TicketDTO;
 import org.example.smartbiobackend.service.TicketService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

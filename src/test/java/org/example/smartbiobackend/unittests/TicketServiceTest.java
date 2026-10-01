@@ -1,7 +1,7 @@
 package org.example.smartbiobackend.unittests;
 
-import org.example.smartbiobackend.dto.TicketDTO;
 import org.example.smartbiobackend.model.*;
+import org.example.smartbiobackend.model.dto.TicketDTO;
 import org.example.smartbiobackend.repository.BookingRepository;
 import org.example.smartbiobackend.service.TicketService;
 

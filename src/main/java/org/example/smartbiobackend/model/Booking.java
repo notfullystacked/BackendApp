@@ -3,6 +3,7 @@ package org.example.smartbiobackend.model;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Booking {
@@ -22,10 +23,6 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "seat_id")
     private Seat seat;
-
-
-
-
 
     public Booking(Showing showing, User user, Seat seat) {
         this.showing = showing;
@@ -94,5 +91,15 @@ public class Booking {
                 ", user=" + user +
                 ", seat=" + seat +
                 '}';
+    }
+
+    public Optional<Booking> getBookingSeats() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getBookingSeats'");
+    }
+
+    public Object getTicketType() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTicketType'");
     }
     }
