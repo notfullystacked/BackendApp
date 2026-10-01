@@ -32,8 +32,22 @@ public class Booking {
         this.seat = seat;
     }
 
-    public Booking() {
 
+
+    @Column(nullable = false)
+    private String customerName;
+
+    @Column(nullable = false)
+    private String customerEmail;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<BookingSeat> bookingSeats = new ArrayList<>();
+
+
+    public Booking(Showing showing, String customerName, String customerEmail) {
+        this.showing = showing;
+        this.customerName = customerName;
+        this.customerEmail = customerEmail;
     }
 
     public int getId() {
