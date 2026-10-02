@@ -1,10 +1,10 @@
 package org.example.smartbiobackend.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
 import java.time.LocalDate;
 
 @Entity
@@ -14,9 +14,14 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    public Movie(String name) {
+        this.name = name;
+    }
+
+    @Column(nullable = false)
     private String name;
 
-    // In seconds
+    // in seconds
     private int runTime;
 
     private String description;
@@ -31,9 +36,9 @@ public class Movie {
 
     private int ageRestriction;
 
-
     // Constructor without imdb rating for now
-    public Movie(int id, String name, int runTime, String description, String director, int releaseYear, LocalDate releaseDate, int ageRestriction) {
+    public Movie(int id, String name, int runTime, String description, String director, int releaseYear,
+            LocalDate releaseDate, int ageRestriction) {
         this.id = id;
         this.name = name;
         this.runTime = runTime;
@@ -45,21 +50,17 @@ public class Movie {
     }
 
     public Movie() {
-
     }
 
-    public Movie(String movieName, int runtime, String description, String director, int releaseYear, LocalDate releaseDate, int ageRestriction) {
-        this.name = movieName;
-        this.runTime = runtime;
+    public Movie(String name, int runTime, String description, String director, int releaseYear,
+                 LocalDate releaseDate, int ageRestriction) {
+        this.name = name;
+        this.runTime = runTime;
         this.description = description;
         this.director = director;
         this.releaseYear = releaseYear;
         this.releaseDate = releaseDate;
         this.ageRestriction = ageRestriction;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public void setId(int movieId) {
@@ -72,14 +73,6 @@ public class Movie {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getRunTime() {
-        return runTime;
-    }
-
-    public void setRunTime(int runTime) {
-        this.runTime = runTime;
     }
 
     public String getDescription() {

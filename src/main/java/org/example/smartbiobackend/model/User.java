@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "users") // I had to rename it because SQL is confusing and I think it has a keyword called User.
 public class User {
 
     @Id
@@ -43,6 +44,10 @@ public class User {
         this.name = name;
         this.email = email;
         this.birthday = birthday;
+
+    }
+
+    public User() {
 
     }
 

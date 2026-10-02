@@ -4,12 +4,10 @@ package org.example.smartbiobackend.config;
 import org.example.smartbiobackend.model.*;
 import org.example.smartbiobackend.repository.*;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-
+import java.time.LocalDateTime;
 @Configuration
 public class InitData implements CommandLineRunner {
 
@@ -55,13 +53,15 @@ public class InitData implements CommandLineRunner {
         Showing showing = new Showing();
         showing.setAuditorium(auditorium);
         showing.setMovie(movie);
-        showing.setStartTime(LocalTime.now());
+        showing.setStartTime(LocalDateTime.now());
         showing.setDate(LocalDate.now());
         showingRepository.save(showing);
 
         Seat seat = new Seat(auditorium, "1b");
         seatRepository.save(seat);
         Booking booking = new Booking(showing, user, seat);
+        booking.setCustomerName(user.getName());
+        booking.setCustomerEmail(user.getEmail());
         bookingRepository.save(booking);
 
         System.out.println(booking);
