@@ -27,7 +27,7 @@ public class TicketService {
 
         String movieTitle = booking.getShowing().getMovie().getName();
         LocalDateTime showingStart = booking.getShowing().getStartTime();
-        String auditoriumName = booking.getShowing().getAuditorium().getName();
+        String auditoriumName = booking.getShowing().getAuditorium().getAuditoriumName();
 
         List<TicketSeatDTO> seats = booking.getBookingSeats().stream()
                 .map(bookingSeat -> new TicketSeatDTO(

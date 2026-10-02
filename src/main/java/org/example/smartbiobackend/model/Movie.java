@@ -52,8 +52,15 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(String string, int i, String string2, String string3, int j, LocalDate of, int k) {
-        //TODO Auto-generated constructor stub
+    public Movie(String name, int runTime, String description, String director, int releaseYear,
+                 LocalDate releaseDate, int ageRestriction) {
+        this.name = name;
+        this.runTime = runTime;
+        this.description = description;
+        this.director = director;
+        this.releaseYear = releaseYear;
+        this.releaseDate = releaseDate;
+        this.ageRestriction = ageRestriction;
     }
 
     public void setId(int movieId) {

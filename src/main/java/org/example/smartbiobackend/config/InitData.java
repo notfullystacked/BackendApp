@@ -60,6 +60,8 @@ public class InitData implements CommandLineRunner {
         Seat seat = new Seat(auditorium, "1b");
         seatRepository.save(seat);
         Booking booking = new Booking(showing, user, seat);
+        booking.setCustomerName(user.getName());
+        booking.setCustomerEmail(user.getEmail());
         bookingRepository.save(booking);
 
         System.out.println(booking);

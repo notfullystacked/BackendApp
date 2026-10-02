@@ -47,6 +47,10 @@ public class User {
 
     }
 
+    public User() {
+
+    }
+
     public String getName() {
         return name;
     }

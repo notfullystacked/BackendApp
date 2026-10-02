@@ -93,13 +93,23 @@ public class Booking {
                 '}';
     }
 
-    public Optional<Booking> getBookingSeats() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBookingSeats'");
+    public List<BookingSeat> getBookingSeats() {
+        return bookingSeats;
     }
 
-    public Object getTicketType() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTicketType'");
+    public String getCustomerName() {
+        return customerName;
     }
+
+    public String getCustomerEmail() {
+        return customerEmail;
     }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+}
