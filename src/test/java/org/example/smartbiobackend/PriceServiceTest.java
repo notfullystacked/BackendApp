@@ -1,6 +1,5 @@
 package org.example.smartbiobackend;
 
-import org.example.smartbiobackend.model.Booking;
 import org.example.smartbiobackend.model.BookingSeat;
 import org.example.smartbiobackend.model.TicketType;
 import org.example.smartbiobackend.repository.BookingSeatRepository;
