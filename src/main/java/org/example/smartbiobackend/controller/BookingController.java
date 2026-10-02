@@ -1,6 +1,5 @@
 package org.example.smartbiobackend.controller;
 
-<<<<<<< HEAD
 import org.example.smartbiobackend.model.dto.BookingRequest;
 import org.example.smartbiobackend.model.dto.BookingResponse;
 import org.example.smartbiobackend.service.BookingService;
@@ -23,7 +22,4 @@ public class BookingController {
         BookingResponse response = bookingService.processBooking(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-=======
-public class BookingController {
->>>>>>> 359cbcc (added repositories, added an initial data config to show a booking, starting on controller from now on)
 }

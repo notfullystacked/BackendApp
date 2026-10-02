@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 @Entity
 public class Seat {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -12,15 +11,8 @@ public class Seat {
    @ManyToOne
    @JoinColumn
    private Auditorium auditorium;
-<<<<<<< HEAD
-<<<<<<< HEAD
    
-=======
-
->>>>>>> 9810903 (added repositories, added an initial data config to show a booking, starting on controller from now on)
-=======
    
->>>>>>> 4413c94 (ISSUE-15: feat: add ticket retrieval endpoint)
    @Column(nullable = false)
    private String seatCode;
 
@@ -67,7 +59,6 @@ public class Seat {
    public void setSeatCode(String seatCode) {
       this.seatCode = seatCode;
    }
-
 
    @Override
    public String toString() {

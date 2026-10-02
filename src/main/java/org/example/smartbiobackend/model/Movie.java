@@ -37,7 +37,6 @@ public class Movie {
 
     private int ageRestriction;
 
-
     // Constructor without imdb rating for now
     public Movie(int id, String name, int runTime, String description, String director, int releaseYear, LocalDate releaseDate, int ageRestriction) {
         this.id = id;
@@ -50,15 +49,11 @@ public class Movie {
         this.ageRestriction = ageRestriction;
     }
 
-
-
-
     public Movie() {
-
     }
 
-    public int getId() {
-        return id;
+    public void setId(int movieId) {
+        this.id = movieId;
     }
 
     public String getName() {
