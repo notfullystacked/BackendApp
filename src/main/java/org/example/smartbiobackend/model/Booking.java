@@ -1,6 +1,9 @@
 package org.example.smartbiobackend.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Booking {
@@ -21,16 +24,32 @@ public class Booking {
     @JoinColumn(name = "seat_id")
     private Seat seat;
 
-
-
     public Booking(Showing showing, User user, Seat seat) {
         this.showing = showing;
         this.user = user;
         this.seat = seat;
     }
 
-    public Booking() {
 
+    @Column(nullable = false)
+    private String customerName;
+
+    @Column(nullable = false)
+    private String customerEmail;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<BookingSeat> bookingSeats = new ArrayList<>();
+
+
+    public Booking(Showing showing, String customerName, String customerEmail) {
+        this.showing = showing;
+        this.customerName = customerName;
+        this.customerEmail = customerEmail;
+
+    }
+
+    public Booking() {
+        //TODO Auto-generated constructor stub
     }
 
     public int getId() {
@@ -72,5 +91,25 @@ public class Booking {
                 ", user=" + user +
                 ", seat=" + seat +
                 '}';
+    }
+
+    public List<BookingSeat> getBookingSeats() {
+        return bookingSeats;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
     }
 }
