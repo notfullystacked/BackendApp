@@ -1,11 +1,24 @@
-###
-POST http://localhost:8080/reserve
+### 1. Pris for booking 1 fra InitData (forventet: total 120)
+GET http://localhost:8080/api/bookings/1/price
+
+### 2. Reserver det ledige sæde 1c som gæst med en børnebillet
+POST http://localhost:8080/api/bookings/reserve
 Content-Type: application/json
 
 {
-  "seatCode": "1b",
+  "seatCode": "1c",
   "userId": null,
   "guestName": "David",
-  "guestMail": "Thomassen@email.dk",
-  "showingId": 1
+  "guestMail": "david@email.dk",
+  "showingId": 1,
+  "ticketTypeId": 2
 }
+
+### 3. Pris for den nye booking (forventet: total 80)
+GET http://localhost:8080/api/bookings/2/price
+
+### 4. Betal den
+POST http://localhost:8080/api/bookings/2/pay
+
+### 5. Betal igen (forventet: fejl, fordi den allerede er betalt)
+POST http://localhost:8080/api/bookings/2/pay

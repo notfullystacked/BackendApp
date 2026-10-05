@@ -20,8 +20,10 @@ public class InitData implements CommandLineRunner {
     private final ShowingRepository showingRepository;
     private final RoleRepository roleRepository;
     private final BookingRepository bookingRepository;
+    private final TicketTypeRepository ticketTypeRepository;
+    private final BookingSeatRepository bookingSeatRepository;
 
-    public InitData(UserRepository userRepository, MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, SeatRepository seatRepository, ShowingRepository showingRepository, RoleRepository roleRepository, BookingRepository bookingRepository) {
+    public InitData(UserRepository userRepository, MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, SeatRepository seatRepository, ShowingRepository showingRepository, RoleRepository roleRepository, BookingRepository bookingRepository, TicketTypeRepository ticketTypeRepository, BookingSeatRepository bookingSeatRepository) {
         this.userRepository = userRepository;
         this.movieRepository = movieRepository;
         this.auditoriumRepository = auditoriumRepository;
@@ -29,6 +31,8 @@ public class InitData implements CommandLineRunner {
         this.showingRepository = showingRepository;
         this.roleRepository = roleRepository;
         this.bookingRepository = bookingRepository;
+        this.ticketTypeRepository = ticketTypeRepository;
+        this.bookingSeatRepository = bookingSeatRepository;
     }
 
     @Override
@@ -61,8 +65,19 @@ public class InitData implements CommandLineRunner {
 
         Seat seat = new Seat(auditorium, "1b");
         seatRepository.save(seat);
+
+        Seat freeSeat = new Seat(auditorium, "1c");   // NY: et ledigt sæde til at teste reservation
+        seatRepository.save(freeSeat);                // NY
+
+        TicketType adult = new TicketType("Adult", 120);   // NY
+        TicketType child = new TicketType("Child", 80);    // NY
+        ticketTypeRepository.save(adult);                  // NY
+        ticketTypeRepository.save(child);
+
         Booking booking = new Booking(showing, user, seat);
         bookingRepository.save(booking);
+
+        bookingSeatRepository.save(new BookingSeat(booking, seat, adult));
 
         System.out.println(booking);
     }
