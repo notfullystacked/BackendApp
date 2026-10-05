@@ -1,6 +1,7 @@
 package org.example.smartbiobackend.servicetest;
 
 import org.example.smartbiobackend.model.User;
+import org.example.smartbiobackend.model.dto.LoginRequest;
 import org.example.smartbiobackend.model.dto.RegisterRequest;
 import org.example.smartbiobackend.repository.UserRepository;
 import org.example.smartbiobackend.service.UserService;
@@ -36,14 +37,14 @@ public class UserServiceTest {
     @Test
     void registeringSavesUserWithNameAndEmail() {
         RegisterRequest request = new RegisterRequest(
-                "Lucas", "Lucas@mail.dk", "hemmelig123", LocalDate.of(2000,1,1));
+                "Lucas", "lucas@mail.dk", "hemmelig123", LocalDate.of(2000,1,1));
         when(userRepository.save(any(User.class)))
                 .thenAnswer(invocation ->  invocation.getArgument(0));
 
         User saved = userService.register(request);
 
         assertEquals("Lucas", saved.getName());
-        assertEquals("Lucas@mail.dk", saved.getEmail());
+        assertEquals("lucas@mail.dk", saved.getEmail());
     }
 
     @Test
@@ -70,5 +71,38 @@ public class UserServiceTest {
 
         assertEquals("Email already in use", exception.getMessage());
         verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void loginWithCorrectEmailAndPasswordReturnsUser() {
+        User existingUser = new User("Lucas", "lucas@mail.dk", LocalDate.of(2000,1,1));
+        existingUser.setPassword(passwordEncoder.encode("hemmelig123"));
+        when(userRepository.findByEmail("lucas@mail.dk")).thenReturn(Optional.of(existingUser));
+
+        User loggedIn = userService.login(new LoginRequest("lucas@mail.dk", "hemmelig123"));
+
+        assertEquals("lucas@mail.dk", loggedIn.getEmail());
+    }
+
+    @Test
+    void loginWithWrongEmail_IsRejected() {
+        when(userRepository.findByEmail("ukendt@mail.dk")).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> userService.login(new LoginRequest("ukendt@mail.dk", "hemmelig123")));
+
+        assertEquals("Invalid email or password", exception.getMessage());
+    }
+
+    @Test
+    void loginWithWrongPassword_IsRejected() {
+        User user = new User("Lucas", "lucas@mail.dk", LocalDate.of(2000,1,1));
+        user.setPassword(passwordEncoder.encode("hemmelig123"));
+        when(userRepository.findByEmail("lucas@mail.dk")).thenReturn(Optional.of(user));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> userService.login(new LoginRequest("lucas@mail.dk", "forkert")));
+
+        assertEquals("Invalid email or password", exception.getMessage());
     }
 }
