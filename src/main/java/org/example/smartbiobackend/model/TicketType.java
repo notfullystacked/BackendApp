@@ -1,9 +1,6 @@
 package org.example.smartbiobackend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class TicketType {
@@ -12,10 +9,14 @@ public class TicketType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private int price;
+    @Column(nullable = false)
     private String ticketName;
 
-    public TicketType() {}
+    @Column(nullable = false)
+    private int price;
+
+    public TicketType() {
+    }
 
     public TicketType(String ticketName, int price) {
         this.ticketName = ticketName;
