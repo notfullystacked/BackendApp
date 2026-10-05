@@ -1,4 +1,4 @@
-package org.example.smartbiobackend;
+package org.example.smartbiobackend.controllertest;
 
 import org.example.smartbiobackend.controller.PriceController;
 import org.example.smartbiobackend.service.PriceService;

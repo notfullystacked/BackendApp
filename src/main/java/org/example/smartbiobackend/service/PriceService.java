@@ -35,7 +35,7 @@ public class PriceService {
         List<BookingSeat> bookingSeats = bookingSeatRepository.findByBookingId(bookingId);
 
         if (bookingSeats.isEmpty()) {
-            throw new IllegalArgumentException("Booking findes ikke: " + bookingId);
+            throw new IllegalArgumentException("Booking not found: " + bookingId);
         }
 
         List<TicketType> tickets = new ArrayList<>();

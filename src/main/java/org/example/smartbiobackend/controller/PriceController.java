@@ -19,6 +19,7 @@ public class PriceController {
 
     @GetMapping("/{bookingId}/price")
     public PriceResponse getPrice(@PathVariable int bookingId) {
-
+    int total = priceService.calculateTotalForBooking(bookingId);
+    return new PriceResponse(bookingId, total);
     }
 }

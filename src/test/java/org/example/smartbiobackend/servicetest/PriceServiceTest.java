@@ -1,4 +1,4 @@
-package org.example.smartbiobackend;
+package org.example.smartbiobackend.servicetest;
 
 import org.example.smartbiobackend.model.BookingSeat;
 import org.example.smartbiobackend.model.TicketType;
@@ -92,6 +92,6 @@ public class PriceServiceTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> priceService.calculateTotalForBooking(99));
 
-        assertEquals("Booking findes ikke: 99", exception.getMessage());
+        assertEquals("Booking not found: 99", exception.getMessage());
     }
 }
