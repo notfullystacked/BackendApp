@@ -23,10 +23,10 @@ public class Movie {
 
     // in seconds
     private int runTime;
-
+@Column(length = 2000)
     private String description;
 
-    private int imdb_rating;
+    private double imdbRating;
 
     private String director;
 
@@ -63,6 +63,18 @@ public class Movie {
         this.ageRestriction = ageRestriction;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getRunTime() {
+        return runTime;
+    }
+
+    public void setRunTime(int runTime) {
+        this.runTime = runTime;
+    }
+
     public void setId(int movieId) {
         this.id = movieId;
     }
@@ -83,12 +95,12 @@ public class Movie {
         this.description = description;
     }
 
-    public int getImdb_rating() {
-        return imdb_rating;
+    public double getImdbRating() {
+        return imdbRating;
     }
 
-    public void setImdb_rating(int imdb_rating) {
-        this.imdb_rating = imdb_rating;
+    public void setImdbRating(double imdbRating) {
+        this.imdbRating = imdbRating;
     }
 
     public String getDirector() {
@@ -130,7 +142,7 @@ public class Movie {
                 ", name='" + name + '\'' +
                 ", runTime=" + runTime +
                 ", description='" + description + '\'' +
-                ", imdb_rating=" + imdb_rating +
+                ", imdbRating=" + imdbRating +
                 ", director='" + director + '\'' +
                 ", releaseYear=" + releaseYear +
                 ", releaseDate=" + releaseDate +
