@@ -1,0 +1,23 @@
+### 1. Hvem er logget ind - før login (forventet: 401)
+GET http://localhost:8080/api/auth/me
+
+### 2. Forkert adgangskode (forventet: 401)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{"username": "mads", "password": "forkert"}
+
+### 3. Rigtigt login (forventet: 200 + Mads med rollen Clerk)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{"username": "mads", "password": "kode123"}
+
+### 4. Hvem er logget ind - efter login (forventet: 200 + Mads)
+GET http://localhost:8080/api/auth/me
+
+### 5. Log ud (forventet: 204)
+POST http://localhost:8080/api/auth/logout
+
+### 6. Hvem er logget ind - efter logout (forventet: 401)
+GET http://localhost:8080/api/auth/me

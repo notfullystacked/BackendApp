@@ -75,6 +75,10 @@ public class User {
         this.birthday = birthday;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getPassword() {
         return password;
     }
