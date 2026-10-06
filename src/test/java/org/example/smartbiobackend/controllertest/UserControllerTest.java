@@ -1,6 +1,6 @@
 package org.example.smartbiobackend.controllertest;
 
-import org.example.smartbiobackend.controller.AuthController;
+import org.example.smartbiobackend.controller.UserController;
 import org.example.smartbiobackend.model.User;
 import org.example.smartbiobackend.model.dto.LoginRequest;
 import org.example.smartbiobackend.model.dto.RegisterRequest;
@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(AuthController.class)
-class AuthControllerTest {
+@WebMvcTest(UserController.class)
+class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,7 +36,7 @@ class AuthControllerTest {
         user.setPassword("$2a$10$enHashSomIkkeMaaSendesUd");
         when(userService.register(any(RegisterRequest.class))).thenReturn(user);
 
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/api/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -58,7 +58,7 @@ class AuthControllerTest {
         user.setPassword("$2a$10$enHashSomIkkeMaaSendesUd");
         when(userService.login(any(LoginRequest.class))).thenReturn(user);
 
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/api/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
