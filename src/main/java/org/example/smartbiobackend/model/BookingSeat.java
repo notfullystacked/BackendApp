@@ -30,11 +30,35 @@ public class BookingSeat {
         this.ticketType = ticketType;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
     public Seat getSeat() {
         return seat;
     }
 
+    public void setSeat(Seat seat) {
+        this.seat = seat;
+    }
+
     public TicketType getTicketType() {
         return ticketType;
+    }
+
+    public void setTicketType(TicketType ticketType) {
+        this.ticketType = ticketType;
     }
 }

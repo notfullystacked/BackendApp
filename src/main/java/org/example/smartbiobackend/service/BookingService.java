@@ -1,15 +1,9 @@
 package org.example.smartbiobackend.service;
 
-import org.example.smartbiobackend.model.Booking;
-import org.example.smartbiobackend.model.Seat;
-import org.example.smartbiobackend.model.Showing;
-import org.example.smartbiobackend.model.User;
+import org.example.smartbiobackend.model.*;
 import org.example.smartbiobackend.model.dto.BookingRequest;
 import org.example.smartbiobackend.model.dto.BookingResponse;
-import org.example.smartbiobackend.repository.BookingRepository;
-import org.example.smartbiobackend.repository.SeatRepository;
-import org.example.smartbiobackend.repository.ShowingRepository;
-import org.example.smartbiobackend.repository.UserRepository;
+import org.example.smartbiobackend.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,14 +16,21 @@ public class BookingService {
     private final UserRepository userRepository;
     private final SeatRepository seatRepository;
     private final ShowingRepository showingRepository;
+    private final TicketTypeRepository ticketTypeRepository; //Lucas added
+    private final BookingSeatRepository bookingSeatRepository; //Lucas added
 
     public BookingService(BookingRepository bookingRepository,
                           UserRepository userRepository,
-                          SeatRepository seatRepository, ShowingRepository showingRepository) {
+                          SeatRepository seatRepository,
+                          ShowingRepository showingRepository,
+                          TicketTypeRepository ticketTypeRepository,
+                          BookingSeatRepository bookingSeatRepository) {
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
         this.seatRepository = seatRepository;
         this.showingRepository = showingRepository;
+        this.ticketTypeRepository = ticketTypeRepository;
+        this.bookingSeatRepository = bookingSeatRepository;
     }
     @Transactional
     public BookingResponse processBooking(BookingRequest request) {
@@ -38,6 +39,10 @@ public class BookingService {
 
         Seat seat = seatRepository.findBySeatCode(request.seatCode(), showing.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Seat not found: " + request.seatCode()));
+
+        //New: Fetch the chosen ticket
+        TicketType ticketType = ticketTypeRepository.findById(request.ticketTypeId())
+                .orElseThrow(() -> new IllegalArgumentException("Ticket Type not found: " + request.ticketTypeId()));
 
         // Fill out the booking information
         Booking booking = new Booking();
@@ -62,6 +67,9 @@ public class BookingService {
 
         // 3. Save booking to DB (guest details are NOT stored)
         Booking savedBooking = bookingRepository.save(booking);
+
+        //  4. Save the seat with its ticket type, so the price can be calculated
+        bookingSeatRepository.save(new BookingSeat(savedBooking, seat, ticketType));
 
           // 5. Construct JSON response
         return new BookingResponse(
