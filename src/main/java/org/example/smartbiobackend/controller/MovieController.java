@@ -6,9 +6,10 @@ import org.example.smartbiobackend.service.MovieService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
+@RestController
 public class MovieController {
 
     private final MovieService movieService;
@@ -17,7 +18,7 @@ public class MovieController {
         this.movieService = movieService;
     }
 
-    @GetMapping("/{api}/movies")
+    @GetMapping("/api/movies")
     public List<Movie> getAllMovies() {
         return movieService.getAllMovies();
     }
