@@ -9,6 +9,49 @@ Content-Type: application/json
   "seatCode": "1c",
   "userId": null,
   "guestName": "David",
+  "guestMail": "Thomassen@email.dk",
+  "showingId": 1
+}
+
+### Registrer en ny bruger (forventet: 201 med id, navn, email)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Lucas",
+  "email": "lucas@mail.dk",
+  "password": "hemmelig123",
+  "birthday": "2000-01-01"
+}
+
+### Log ind med rigtig adgangskode (forventet: 200)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "lucas@mail.dk",
+  "password": "hemmelig123"
+}
+
+### Log ind med forkert adgangskode (forventet: fejl)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "lucas@mail.dk",
+  "password": "forkert"
+}
+
+### Registrer med samme email igen (forventet: fejl)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Lucas",
+  "email": "lucas@mail.dk",
+  "password": "noget",
+  "birthday": "2000-01-01"
+}
   "guestMail": "david@email.dk",
   "showingId": 1,
   "ticketTypeId": 2
