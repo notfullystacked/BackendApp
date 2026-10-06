@@ -21,6 +21,25 @@ jobs:
           distribution: 'oracle'
           cache: maven
 
-      # 3. Run the tests
-      - name: Build and Run Tests
-        run: mvn test
+    # 1. Start MySQL container using your compose.yml
+      - name: Start Docker Compose
+        run: docker compose up -d
+
+    # 2. Wait for MySQL to accept connections before running tests
+      - name: Wait for MySQL to be ready
+        run: |
+          until docker exec kinodb_mysql mysqladmin ping -h "127.0.0.1" --silent; do
+            echo "Waiting for MySQL container..."
+            sleep 2
+          done
+
+    # 3. Run Maven tests with the docker profile active
+      - name: Build and Test with Maven
+        run: mvn test -Dspring.profiles.active=docker
+
+    # 4. Cleanup containers after test execution
+      - name: Stop Docker Compose
+        if: always()
+        run: docker compose down  
+
+
