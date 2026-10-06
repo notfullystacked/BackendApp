@@ -57,15 +57,20 @@ public class BookingService {
             User user = userRepository.findById(request.userId())
                     .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.userId()));
             booking.setUser(user);
+            booking.setCustomerName(user.getName());   // Lucas: Booking kraever navn og email
+            booking.setCustomerEmail(user.getEmail());
+            recipientEmail = user.getEmail();
         } else {
             // Guest booking: do not attach a User entity
             if (request.guestMail() == null || request.guestMail().isBlank()) {
                 throw new IllegalArgumentException("Guest email is required for unregistered bookings.");
             }
+            booking.setCustomerName(request.guestName());   // Lucas: gem gaestens navn og email
+            booking.setCustomerEmail(request.guestMail());
             recipientEmail = request.guestMail();
         }
 
-        // 3. Save booking to DB (guest details are NOT stored)
+        // 3. Save booking to DB (with the customer's name and email)
         Booking savedBooking = bookingRepository.save(booking);
 
         //  4. Save the seat with its ticket type, so the price can be calculated
