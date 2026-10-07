@@ -32,6 +32,7 @@ public class Showing {
         this.movie = movie;
         this.date = date;
         this.startTime = startTime;
+        this.status = ShowingStatus.ACTIVE;
     }
 
     public Showing() {
