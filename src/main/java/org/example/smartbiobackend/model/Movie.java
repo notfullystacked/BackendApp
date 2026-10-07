@@ -1,10 +1,6 @@
 package org.example.smartbiobackend.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -35,6 +31,12 @@ public class Movie {
     private LocalDate releaseDate;
 
     private int ageRestriction;
+
+    @Enumerated(EnumType.STRING)
+    private Genre genre;
+
+    // false = taget af programmet
+    private boolean active = true;
 
     // Constructor without imdb rating for now
     public Movie(int id, String name, int runTime, String description, String director, int releaseYear,
@@ -135,6 +137,12 @@ public class Movie {
         this.ageRestriction = ageRestriction;
     }
 
+    public Genre getGenre() { return genre; }
+    public void setGenre(Genre genre) { this.genre = genre; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -147,6 +155,8 @@ public class Movie {
                 ", releaseYear=" + releaseYear +
                 ", releaseDate=" + releaseDate +
                 ", ageRestriction=" + ageRestriction +
+                ", genre=" + genre +
+                ", active=" + active +
                 '}';
     }
 }

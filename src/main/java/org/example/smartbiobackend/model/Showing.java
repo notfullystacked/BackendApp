@@ -84,6 +84,7 @@ public class Showing {
         this.movie = movie;
         this.auditorium = auditorium;
         this.startTime = startTime;
+        this.date = startTime != null ? startTime.toLocalDate() : null;
         this.status = ShowingStatus.ACTIVE;
     }
     public Movie getMovie() {

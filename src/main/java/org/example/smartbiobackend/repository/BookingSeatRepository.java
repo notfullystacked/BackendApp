@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface BookingSeatRepository extends JpaRepository<BookingSeat, Integer> {
-
     List<BookingSeat> findByBookingId(int bookingId);
+    List<BookingSeat> findByShowingId(int showingId);
+    boolean existsByShowingIdAndSeatId(int showingId, int seatId);
 }

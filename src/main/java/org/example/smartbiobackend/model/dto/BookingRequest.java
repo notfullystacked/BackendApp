@@ -1,6 +1,8 @@
 package org.example.smartbiobackend.model.dto;
 
-public record BookingRequest(String seatCode, Integer userId, String guestName, String guestMail, int showingId, int ticketTypeId) {
-}
+import java.util.List;
 
-//Lucas added ticketTypeId
+// userId sættes for registrerede kunder. Ellers bruges guestName/guestMail (også når ekspedienten booker over telefonen)
+public record BookingRequest(Integer userId, String guestName, String guestMail,
+                             int showingId, List<SeatTicket> seats) {
+}

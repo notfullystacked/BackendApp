@@ -1,84 +1,77 @@
 package org.example.smartbiobackend.config;
 
-
 import org.example.smartbiobackend.model.*;
+import org.example.smartbiobackend.model.dto.BookingRequest;
+import org.example.smartbiobackend.model.dto.SeatTicket;
 import org.example.smartbiobackend.repository.*;
+import org.example.smartbiobackend.service.AuditoriumService;
+import org.example.smartbiobackend.service.BookingService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
+
 @Configuration
 public class InitData implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final MovieRepository movieRepository;
-    private final AuditoriumRepository auditoriumRepository;
-    private final SeatRepository seatRepository;
     private final ShowingRepository showingRepository;
-    private final RoleRepository roleRepository;
-    private final BookingRepository bookingRepository;
+    private final SeatRepository seatRepository;
     private final TicketTypeRepository ticketTypeRepository;
-    private final BookingSeatRepository bookingSeatRepository;
+    private final AuditoriumService auditoriumService;
+    private final BookingService bookingService;
 
-    public InitData(UserRepository userRepository, MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, SeatRepository seatRepository, ShowingRepository showingRepository, RoleRepository roleRepository, BookingRepository bookingRepository, TicketTypeRepository ticketTypeRepository, BookingSeatRepository bookingSeatRepository) {
+    public InitData(UserRepository userRepository, MovieRepository movieRepository,
+                    ShowingRepository showingRepository, SeatRepository seatRepository,
+                    TicketTypeRepository ticketTypeRepository, AuditoriumService auditoriumService,
+                    BookingService bookingService) {
         this.userRepository = userRepository;
         this.movieRepository = movieRepository;
-        this.auditoriumRepository = auditoriumRepository;
-        this.seatRepository = seatRepository;
         this.showingRepository = showingRepository;
-        this.roleRepository = roleRepository;
-        this.bookingRepository = bookingRepository;
+        this.seatRepository = seatRepository;
         this.ticketTypeRepository = ticketTypeRepository;
-        this.bookingSeatRepository = bookingSeatRepository;
+        this.auditoriumService = auditoriumService;
+        this.bookingService = bookingService;
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        // Steps:
-        // Create x Users
-        // Pick a seat in a booking
-        // Verify that the seat is reserved by user
-        setupABooking();
-    }
+    public void run(String... args) {
+        User david = userRepository.save(new User("David", "mail@mail.dk", LocalDate.of(1995, 5, 1)));
 
-    private void setupABooking() {
-        User user = new User("David", "mail@mail.dk", LocalDate.now());
-        userRepository.save(user);
+        // Sæderne oprettes automatisk ud fra rækker × sæder pr. række
+        Auditorium sal1 = auditoriumService.createAuditorium("Sal 1", 20, 12);
+        Auditorium sal2 = auditoriumService.createAuditorium("Sal 2", 25, 16);
 
-        Movie movie = new Movie("Jaws", 2000,
-                "Shark movie"
-                , "Steven Spielberg", 1975,
-                LocalDate.of(1975,6,20), 18);
+        // runTime er i sekunder
+        Movie jaws = new Movie("Jaws", 124 * 60, "Shark movie", "Steven Spielberg", 1975,
+                LocalDate.of(1975, 6, 20), 15);
+        jaws.setGenre(Genre.HORROR);
 
-        movieRepository.save(movie);
-        Auditorium auditorium = new Auditorium("Horror Auditorium");
-        auditoriumRepository.save(auditorium);
-        Showing showing = new Showing();
-        showing.setAuditorium(auditorium);
-        showing.setMovie(movie);
-        showing.setStartTime(LocalDateTime.now());
-        showing.setDate(LocalDate.now());
-        showingRepository.save(showing);
+        Movie notebook = new Movie("The Notebook", 123 * 60, "Love story", "Nick Cassavetes", 2004,
+                LocalDate.of(2004, 6, 25), 11);
+        notebook.setGenre(Genre.ROMANCE);
 
-        Seat seat = new Seat(auditorium, "1b");
-        seatRepository.save(seat);
+        Movie madMax = new Movie("Mad Max: Fury Road", 120 * 60, "Desert chase", "George Miller", 2015,
+                LocalDate.of(2015, 5, 15), 15);
+        madMax.setGenre(Genre.ACTION);
 
-        Seat freeSeat = new Seat(auditorium, "1c");   // NY: et ledigt sæde til at teste reservation
-        seatRepository.save(freeSeat);                // NY
+        movieRepository.saveAll(List.of(jaws, notebook, madMax));
 
-        TicketType adult = new TicketType("Adult", 120);   // NY
-        TicketType child = new TicketType("Child", 80);    // NY
-        ticketTypeRepository.save(adult);                  // NY
-        ticketTypeRepository.save(child);
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        showingRepository.save(new Showing(jaws, sal1, tomorrow.atTime(17, 0)));
+        Showing jawsEvening = showingRepository.save(new Showing(jaws, sal1, tomorrow.atTime(20, 0)));
+        showingRepository.save(new Showing(notebook, sal2, tomorrow.atTime(19, 0)));
+        showingRepository.save(new Showing(madMax, sal2, tomorrow.plusDays(1).atTime(21, 0)));
 
-        Booking booking = new Booking(showing, user, seat);
-        booking.setCustomerName(user.getName());
-        booking.setCustomerEmail(user.getEmail());
-        bookingRepository.save(booking);
+        TicketType adult = ticketTypeRepository.save(new TicketType("Voksen", 120));
+        ticketTypeRepository.save(new TicketType("Barn", 80));
+        ticketTypeRepository.save(new TicketType("Pensionist", 95));
 
-        bookingSeatRepository.save(new BookingSeat(booking, seat, adult));
-
-        System.out.println(booking);
+        // Én testbooking: række 1, sæde 1 til Jaws kl. 20
+        Seat firstSeat = seatRepository.findByAuditoriumIdOrderBySeatRowAscSeatNumberAsc(sal1.getId()).get(0);
+        bookingService.processBooking(new BookingRequest(david.getId(), null, null, jawsEvening.getId(),
+                List.of(new SeatTicket(firstSeat.getId(), adult.getId()))));
     }
 }

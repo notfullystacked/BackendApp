@@ -4,8 +4,6 @@ package org.example.smartbiobackend.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "users") // I had to rename it because SQL is confusing and I think it has a keyword called User.
@@ -25,10 +23,6 @@ public class User {
 
     @Column(nullable = true)
     private String password;
-
-    @OneToMany
-    @JoinColumn
-    Set<Role> roles = new HashSet<>();
 
     /***
     Constructor without password for initial creation
@@ -90,8 +84,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "roles=" + roles +
-                ", birthday=" + birthday +
+                "birthday=" + birthday +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", id=" + id +
