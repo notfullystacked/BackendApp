@@ -1,5 +1,7 @@
 package org.example.smartbiobackend.controller;
 
+import java.util.List;
+import org.example.smartbiobackend.dto.SeatOverviewDto;
 import org.example.smartbiobackend.model.dto.BookingRequest;
 import org.example.smartbiobackend.model.dto.BookingResponse;
 import org.example.smartbiobackend.service.BookingService;
@@ -7,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -22,5 +26,13 @@ public class BookingController {
     public ResponseEntity<BookingResponse> reserveSeat(@RequestBody BookingRequest request)  {
         BookingResponse response = bookingService.processBooking(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    @GetMapping("/showing/{showingId}/seats")
+    public ResponseEntity<List<SeatOverviewDto>> getSeatOverview(
+            @PathVariable int showingId) {
+        List<SeatOverviewDto> seats =
+                bookingService.getSeatOverview(showingId);
+
+        return ResponseEntity.ok(seats);
     }
 }
