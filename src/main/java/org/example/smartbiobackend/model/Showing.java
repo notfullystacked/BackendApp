@@ -23,12 +23,16 @@ public class Showing {
 
     private LocalDateTime startTime;
 
+    @Enumerated(EnumType.STRING)
+    private ShowingStatus status;
+
     public Showing(int id, Auditorium auditorium, Movie movie, LocalDate date, LocalDateTime startTime) {
         this.id = id;
         this.auditorium = auditorium;
         this.movie = movie;
         this.date = date;
         this.startTime = startTime;
+        this.status = ShowingStatus.ACTIVE;
     }
 
     public Showing() {
@@ -61,16 +65,26 @@ public class Showing {
         this.date = date;
     }
 
+    public ShowingStatus getStatus (){
+        return status;
+    }
+
+    public void setStatus (ShowingStatus status){
+        this.status = status;
+    }
+
     public Showing(Auditorium auditorium, Movie movie, LocalDate date, LocalDateTime startTime) {
         this.auditorium = auditorium;
         this.movie = movie;
         this.date = date;
         this.startTime = startTime;
+        this.status = ShowingStatus.ACTIVE;
     }
     public Showing(Movie movie, Auditorium auditorium, LocalDateTime startTime) {
         this.movie = movie;
         this.auditorium = auditorium;
         this.startTime = startTime;
+        this.status = ShowingStatus.ACTIVE;
     }
     public Movie getMovie() {
         return movie;
@@ -95,6 +109,7 @@ public class Showing {
                 ", movie=" + movie +
                 ", date=" + date +
                 ", startTime=" + startTime +
+                ", status=" + status +
                 '}';
     }
 }
