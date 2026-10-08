@@ -36,7 +36,7 @@ public class Showing {
     }
 
     public Showing() {
-
+        this.status = ShowingStatus.ACTIVE;
     }
 
 

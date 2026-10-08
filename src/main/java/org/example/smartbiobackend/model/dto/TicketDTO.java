@@ -12,10 +12,12 @@ public class TicketDTO {
     private final List<TicketSeatDTO> seats;
     private final String customerName;
     private final String customerEmail;
+    private final String qrCode;
 
     public TicketDTO(int bookingId, String movieTitle, LocalDateTime showingStart,
                      String auditoriumName, List<TicketSeatDTO> seats,
-                     String customerName, String customerEmail) {
+                     String customerName, String customerEmail,
+                     String qrCode) {
         this.bookingId = bookingId;
         this.movieTitle = movieTitle;
         this.showingStart = showingStart;
@@ -23,6 +25,7 @@ public class TicketDTO {
         this.seats = seats;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
+        this.qrCode = qrCode;
     }
 
     public int getBookingId() { return bookingId; }
@@ -32,7 +35,7 @@ public class TicketDTO {
     public List<TicketSeatDTO> getSeats() { return seats; }
     public String getCustomerName() { return customerName; }
     public String getCustomerEmail() { return customerEmail; }
-    public String getQrPlaceholder() { return "TICKET-" + bookingId; }
+    public String getQrCode() { return qrCode; }
 
     public int getTotalPrice() {
         return seats.stream().mapToInt(TicketSeatDTO::getPrice).sum();

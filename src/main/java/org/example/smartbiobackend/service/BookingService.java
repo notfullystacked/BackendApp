@@ -1,5 +1,6 @@
 package org.example.smartbiobackend.service;
 
+import org.example.smartbiobackend.dto.BookingDetailsDto;
 import org.example.smartbiobackend.dto.SeatOverviewDto;
 import org.example.smartbiobackend.model.*;
 import org.example.smartbiobackend.model.dto.BookingRequest;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import java.util.Optional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,7 +45,10 @@ public class BookingService {
         Showing showing = showingRepository.findById(request.showingId())
                 .orElseThrow(() -> new IllegalArgumentException("Showing not found"));
 
-        Seat seat = seatRepository.findBySeatCode(request.seatCode(), showing.getId())
+        Seat seat = seatRepository.findBySeatCodeAndAuditoriumId(
+                        request.seatCode(),
+                        showing.getAuditorium().getId()
+                )
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Seat not found: " + request.seatCode()));
 
@@ -126,6 +131,27 @@ public class BookingService {
                                 .anyMatch(bookingSeat ->
                                         bookingSeat.getSeat().getId() == seat.getId())
                 ))
+                .toList();
+    }
+    public BookingDetailsDto findBookingById(int bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Booking not found: " + bookingId));
+
+        return new BookingDetailsDto(
+                booking.getId(),
+                booking.getCustomerName(),
+                booking.getCustomerEmail(),
+                booking.getSeat().getSeatCode(),
+                booking.getShowing().getId(),
+                booking.getShowing().getMovie().getName(),
+                booking.getShowing().getStartTime()
+        );
+    }
+    public List<BookingDetailsDto> getBookingsByShowing(int showingId) {
+        return bookingRepository.findByShowing_Id(showingId)
+                .stream()
+                .map(booking -> findBookingById(booking.getId()))
                 .toList();
     }
 }

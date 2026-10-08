@@ -141,14 +141,14 @@ public class TicketServiceTest {
     }
 
     @Test
-    void getTicket_WhenBookingExists_ReturnsQrPlaceholderWithBookingId() {
+    void getTicket_WhenBookingExists_ReturnsRealQrCode() {
         Booking booking = bookingForInception();
         ReflectionTestUtils.setField(booking, "id", 1);
         when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
 
         TicketDTO ticket = ticketService.getTicket(1);
 
-        assertThat(ticket.getQrPlaceholder()).isEqualTo("TICKET-1");
+        assertThat(ticket.getQrCode()).isNotNull();
+        assertThat(ticket.getQrCode()).isNotEmpty();
     }
-
 }

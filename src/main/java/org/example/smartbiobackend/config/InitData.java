@@ -5,6 +5,8 @@ import org.example.smartbiobackend.model.*;
 import org.example.smartbiobackend.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.example.smartbiobackend.repository.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 public class InitData implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final EmployeeRepository employeeRepository;
+    private final PasswordEncoder passwordEncoder;
     private final MovieRepository movieRepository;
     private final AuditoriumRepository auditoriumRepository;
     private final SeatRepository seatRepository;
@@ -21,7 +25,7 @@ public class InitData implements CommandLineRunner {
     private final TicketTypeRepository ticketTypeRepository;
     private final BookingSeatRepository bookingSeatRepository;
 
-    public InitData(UserRepository userRepository, MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, SeatRepository seatRepository, ShowingRepository showingRepository, RoleRepository roleRepository, BookingRepository bookingRepository, TicketTypeRepository ticketTypeRepository, BookingSeatRepository bookingSeatRepository) {
+    public InitData(UserRepository userRepository, MovieRepository movieRepository, AuditoriumRepository auditoriumRepository, SeatRepository seatRepository, ShowingRepository showingRepository, RoleRepository roleRepository, BookingRepository bookingRepository, TicketTypeRepository ticketTypeRepository, BookingSeatRepository bookingSeatRepository, EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.movieRepository = movieRepository;
         this.auditoriumRepository = auditoriumRepository;
@@ -31,6 +35,8 @@ public class InitData implements CommandLineRunner {
         this.bookingRepository = bookingRepository;
         this.ticketTypeRepository = ticketTypeRepository;
         this.bookingSeatRepository = bookingSeatRepository;
+        this.employeeRepository = employeeRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -43,16 +49,40 @@ public class InitData implements CommandLineRunner {
     }
 
     private void setupABooking() {
+        // Create employee role
+        Role employeeRole = new Role("EMPLOYEE");
+        roleRepository.save(employeeRole);
+
+        Employee employee = new Employee();
+
+        employee.setName("Test Employee");
+        employee.setUsername("employee");
+        employee.setEmail("employee@kino.dk");
+        employee.setBirthday(LocalDate.of(1995, 1, 1));
+        employee.setPassword(
+                passwordEncoder.encode("password123")
+        );
+
+        employee.getRoles().add(employeeRole);
+
+        employeeRepository.save(employee);
+
         User user = new User("David", "mail@mail.dk", LocalDate.now());
         userRepository.save(user);
 
         Movie movie = new Movie("Jaws", 2000,
-                "Shark movie"
-                , "Steven Spielberg", 1975,
-                LocalDate.of(1975,6,20), 18);
+                "Shark movie",
+                "Steven Spielberg", 1975,
+                LocalDate.of(1975, 6, 20), 18,
+                "Horror");
 
         movieRepository.save(movie);
-        Auditorium auditorium = new Auditorium("Horror Auditorium");
+        Auditorium auditorium = new Auditorium(
+                "Horror Auditorium",
+                5,
+                10
+        );
+
         auditoriumRepository.save(auditorium);
         Showing showing = new Showing();
         showing.setAuditorium(auditorium);
@@ -61,11 +91,11 @@ public class InitData implements CommandLineRunner {
         showing.setDate(LocalDate.now());
         showingRepository.save(showing);
 
-        Seat seat = new Seat(auditorium, "1b");
+        Seat seat = new Seat(auditorium, 1, 2);
         seatRepository.save(seat);
 
-        Seat freeSeat = new Seat(auditorium, "1c");   // NY: et ledigt sæde til at teste reservation
-        seatRepository.save(freeSeat);                // NY
+        Seat freeSeat = new Seat(auditorium, 1, 3);
+        seatRepository.save(freeSeat);
 
         TicketType adult = new TicketType("Adult", 120);   // NY
         TicketType child = new TicketType("Child", 80);    // NY

@@ -36,9 +36,15 @@ public class Movie {
 
     private int ageRestriction;
 
+    private String category;
+
+    private boolean active = true;
+
+    private boolean promoted = false;
+
     // Constructor without imdb rating for now
     public Movie(int id, String name, int runTime, String description, String director, int releaseYear,
-            LocalDate releaseDate, int ageRestriction) {
+            LocalDate releaseDate, int ageRestriction, String category) {
         this.id = id;
         this.name = name;
         this.runTime = runTime;
@@ -47,13 +53,15 @@ public class Movie {
         this.releaseYear = releaseYear;
         this.releaseDate = releaseDate;
         this.ageRestriction = ageRestriction;
+        this.category = category;
+
     }
 
     public Movie() {
     }
 
     public Movie(String name, int runTime, String description, String director, int releaseYear,
-                 LocalDate releaseDate, int ageRestriction) {
+                 LocalDate releaseDate, int ageRestriction, String category) {
         this.name = name;
         this.runTime = runTime;
         this.description = description;
@@ -61,6 +69,7 @@ public class Movie {
         this.releaseYear = releaseYear;
         this.releaseDate = releaseDate;
         this.ageRestriction = ageRestriction;
+        this.category = category;
     }
 
     public int getId() {
@@ -135,6 +144,30 @@ public class Movie {
         this.ageRestriction = ageRestriction;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isPromoted() {
+        return promoted;
+    }
+
+    public void setPromoted(boolean promoted) {
+        this.promoted = promoted;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -147,6 +180,8 @@ public class Movie {
                 ", releaseYear=" + releaseYear +
                 ", releaseDate=" + releaseDate +
                 ", ageRestriction=" + ageRestriction +
+                ", category=" + category + "/" +
+                ", active=" + active +
                 '}';
     }
 }

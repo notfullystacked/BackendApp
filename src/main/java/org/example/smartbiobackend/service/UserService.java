@@ -39,4 +39,9 @@ public class UserService {
 
         return user;
     }
+    public User getById(int userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("User not found: " + userId));
+    }
 }
