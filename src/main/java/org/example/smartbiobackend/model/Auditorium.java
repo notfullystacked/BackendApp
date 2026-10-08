@@ -18,6 +18,10 @@ public class Auditorium {
     // false = salen er lukket (fx ombygning), så der ikke kan planlægges nye forestillinger i den
     private boolean active = true;
 
+    // Sættes af personalet: NEEDS_CLEANING efter en forestilling, CLEAN når salen er gjort ren
+    @Enumerated(EnumType.STRING)
+    private CleaningStatus cleaningStatus = CleaningStatus.CLEAN;
+
     public Auditorium() {
     }
 
@@ -45,6 +49,9 @@ public class Auditorium {
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    public CleaningStatus getCleaningStatus() { return cleaningStatus; }
+    public void setCleaningStatus(CleaningStatus cleaningStatus) { this.cleaningStatus = cleaningStatus; }
 
     // ISSUE-9: kapaciteten regnes ud fra data i databasen, ikke hardcoded.
     // Kommer med i JSON som "capacity" (Jackson kalder getteren), men er ikke en kolonne

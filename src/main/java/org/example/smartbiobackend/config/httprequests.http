@@ -143,6 +143,12 @@ PUT http://localhost:8080/api/auditoriums/3/close
 ### D6. Åbn den igen
 PUT http://localhost:8080/api/auditoriums/3/open
 
+### D7. Rengøring: markér Sal 1 som "skal gøres ren" (kræver Inspector, Clerk eller Admin)
+PUT http://localhost:8080/api/auditoriums/1/needs-cleaning
+
+### D8. Markér Sal 1 som ren igen
+PUT http://localhost:8080/api/auditoriums/1/clean
+
 
 ### ============ E. Promovering (ISSUE-10) ============
 
@@ -234,7 +240,7 @@ Content-Type: application/json
   "seats": [ { "seatId": 300, "ticketTypeId": 1 } ]
 }
 
-### G5. Detaljer, pris og billet for booking 2
+### G5. Detaljer, pris og billet for booking 2. Billetten har feltet qrCode (PNG som Base64)
 GET http://localhost:8080/api/bookings/2
 
 ###
@@ -273,7 +279,13 @@ Content-Type: application/json
 
 { "email": "lucas@mail.dk", "password": "hemmelig123" }
 
-### H3. Davids bookinger
+### H3. Hvem er logget ind som kunde? (forventet: 200 efter H2, ellers 401)
+GET http://localhost:8080/api/users/profile
+
+### H4. Kunde-logout
+POST http://localhost:8080/api/users/logout
+
+### H5. Davids bookinger
 GET http://localhost:8080/api/users/1/bookings
 
 

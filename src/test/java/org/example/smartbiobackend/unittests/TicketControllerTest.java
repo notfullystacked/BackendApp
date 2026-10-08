@@ -39,7 +39,8 @@ class TicketControllerTest {
                 "Hall 1",
                 List.of(new TicketSeatDTO("A1", "Adult", 95)),
                 "Alice",
-                "alice@example.com"
+                "alice@example.com",
+                "base64-qr-kode"
         );
         when(ticketService.getTicket(1)).thenReturn(ticket);
 
@@ -47,7 +48,7 @@ class TicketControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.movieTitle").value("Inception"))
                 .andExpect(jsonPath("$.seats[0].seatCode").value("A1"))
-                .andExpect(jsonPath("$.qrPlaceholder").value("TICKET-1"));
+                .andExpect(jsonPath("$.qrCode").value("base64-qr-kode"));
     }
 
     @Test

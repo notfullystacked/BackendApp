@@ -3,12 +3,13 @@ package org.example.smartbiobackend.unittests;
 import org.example.smartbiobackend.model.*;
 import org.example.smartbiobackend.model.dto.TicketDTO;
 import org.example.smartbiobackend.repository.BookingRepository;
+import org.example.smartbiobackend.service.QrCodeService;
 import org.example.smartbiobackend.service.TicketService;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -25,8 +26,13 @@ public class TicketServiceTest {
     @Mock
     private BookingRepository bookingRepository;
 
-    @InjectMocks
     private TicketService ticketService;
+
+    // En rigtig QrCodeService (ikke en mock), så testen laver en ægte QR-kode
+    @BeforeEach
+    void setUp() {
+        ticketService = new TicketService(bookingRepository, new QrCodeService());
+    }
 
     private Booking bookingForInception() {
         Movie movie = new Movie("Inception");
@@ -141,14 +147,14 @@ public class TicketServiceTest {
     }
 
     @Test
-    void getTicket_WhenBookingExists_ReturnsQrPlaceholderWithBookingId() {
+    void getTicket_WhenBookingExists_ReturnsRealQrCode() {
         Booking booking = bookingForInception();
         ReflectionTestUtils.setField(booking, "id", 1);
         when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
 
         TicketDTO ticket = ticketService.getTicket(1);
 
-        assertThat(ticket.getQrPlaceholder()).isEqualTo("TICKET-1");
+        assertThat(ticket.getQrCode()).isNotNull();
+        assertThat(ticket.getQrCode()).isNotEmpty();
     }
-
 }

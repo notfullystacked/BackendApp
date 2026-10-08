@@ -98,6 +98,19 @@ noget andet, er det `MovieService` (afsnittet "Promovering") og de to felter, de
 | Medarbejdere | Admin kan oprette, rette og slette medarbejdere og roller. Adgangskoder gemmes som BCrypt-hash |
 | Billettyper | Priser ligger i databasen og kan ændres af Admin |
 | Sale | Kan lukkes og åbnes igen (fx ved ombygning) |
+| Rengøring | Personalet markerer en sal som `NEEDS_CLEANING` og `CLEAN` (Damolas feature fra `main`) |
+| QR-kode | Billetten indeholder en QR-kode som Base64-PNG i feltet `qrCode` (Damolas feature fra `main`) |
+| Kunde-session | Kunde-login gemmes i sessionen, og `GET /api/users/profile` viser, hvem der er logget ind |
+
+### QR-koden på billetten
+`GET /api/bookings/{id}/ticket` har feltet `qrCode`. Det er et PNG-billede kodet som Base64-tekst, og indholdet
+af koden er `TICKET-<bookingId>`. I frontenden vises det sådan:
+
+```js
+img.src = "data:image/png;base64," + ticket.qrCode;
+```
+
+Koden laves af `QrCodeService` med biblioteket ZXing (`com.google.zxing:core` i `pom.xml`).
 
 ### Login og roller
 Medarbejdere logger ind med `POST /api/auth/login`. Serveren gemmer medarbejderens id i en **session**, og browseren
@@ -108,8 +121,8 @@ får en cookie (`JSESSIONID`). Ved hvert beskyttet kald slår `RoleGuard.require
 | Alle medarbejdere | Se alle film og forestillinger (også aflyste) og alle bookinger |
 | `Admin` | Alt |
 | `MovieEditor` | Oprette, rette og fjerne film og forestillinger, promovere film |
-| `Clerk` | Billetkontrol (og telefonbookinger, som er åbne for alle) |
-| `Inspector` | Billetkontrol |
+| `Clerk` | Billetkontrol, rengøringsstatus (og telefonbookinger, som er åbne for alle) |
+| `Inspector` | Billetkontrol, rengøringsstatus |
 | `Operator` | Ingen ekstra rettigheder endnu |
 
 Testbrugere (alle med koden `kode123`): `mads` (Admin + Clerk), `sofie` (Clerk), `oliver` (Operator + MovieEditor),
@@ -148,6 +161,7 @@ Alle fejl har samme form: `{"error": "besked"}`. Det styres ét sted, i `GlobalE
 | POST, PUT | `/api/showings`, `/api/showings/{id}`, `/api/showings/{id}/cancel` | MovieEditor |
 | GET | `/api/auditoriums`, `/api/auditoriums/{id}`, `/api/auditoriums/{id}/seats` | alle |
 | POST, PUT | `/api/auditoriums`, `/api/auditoriums/{id}`, `/{id}/close`, `/{id}/open` | Admin |
+| PUT | `/api/auditoriums/{id}/needs-cleaning`, `/api/auditoriums/{id}/clean` | Inspector, Clerk |
 | GET | `/api/ticket-types` | alle |
 | POST, PUT | `/api/ticket-types`, `/api/ticket-types/{id}` | Admin |
 | POST | `/api/bookings/reserve`, `/api/bookings/{id}/pay` | alle |
@@ -155,29 +169,54 @@ Alle fejl har samme form: `{"error": "besked"}`. Det styres ét sted, i `GlobalE
 | DELETE | `/api/bookings/{id}?email=...` | kunde med rigtig email, eller medarbejder |
 | GET | `/api/bookings` (`?showingId=` eller `?email=`) | medarbejder |
 | PUT | `/api/bookings/{id}/check-in` | Inspector, Clerk |
-| POST | `/api/users/register`, `/api/users/login` | alle |
+| POST | `/api/users/register`, `/api/users/login`, `/api/users/logout` | alle |
+| GET | `/api/users/profile` | kunde, der er logget ind |
 | GET | `/api/users/{id}/bookings` | alle |
 | GET, POST, PUT, DELETE | `/api/employees`, `/api/employees/{id}`, `/api/employees/roles` | Admin |
 
-## 5. Hvad er ændret i forhold til `Færdit-Backend`
+## 5. Hvor koden kommer fra
 
-Branchen bygger på `Færdit-Backend` med `main` flettet ind.
+Branchen `kino-samlet-backend` samler tre ting:
 
-- "Findes ikke" giver nu 404 i stedet for 400 (`NotFoundException`).
-- 401 og 403 har nu også en JSON-besked, så frontenden kan vise den.
+1. `Færdit-Backend`: sale med automatiske sæder, forestillinger, booking af flere sæder, roller.
+2. `kino-faerdig-backend`: de fire user stories gjort færdige, fejlkoder, medarbejdere, tests.
+3. Fra `main` (Damola, 8. oktober): QR-kode på billetten, rengøringsstatus og kunde-session med `/profile`.
+
+`main` er flettet ind, så branchen kan merges til `main` uden konflikter. Hvor `main` og denne branch havde bygget
+det samme på hver sin måde, er det denne branchs udgave, der gælder. Det betyder, at nogle kald fra `main` har
+skiftet form:
+
+| På `main` før | Nu |
+|---|---|
+| `GET /movies` | `GET /api/movies` (kun film på programmet) eller `GET /api/movies/all` (medarbejder) |
+| `POST /movies`, `PUT /movies/{id}` uden login | `POST /api/movies`, `PUT /api/movies/{id}`, kræver MovieEditor |
+| `PUT /movies/{id}/remove-from-program` | `PUT /api/movies/{id}/deactivate` |
+| `PUT /movies/{id}/promote` | `PUT /api/movies/{id}/promote` (og `/unpromote`) |
+| Film har `category` (fri tekst) | Film har `genre` (enum, se `GET /api/movies/genres`) |
+| `GET /showings/plan` | `GET /api/showings` (evt. `?date=` og `?movieId=`) |
+| `POST /showings?movieId=..&date=..` | `POST /api/showings` og `PUT /api/showings/{id}` med JSON-body, kræver MovieEditor |
+| `GET /auditoriums` | `GET /api/auditoriums` |
+| `POST /auditoriums?name=..&rowCount=..` | `POST /api/auditoriums` med JSON-body, kræver Admin |
+| `PUT /auditoriums/{id}/needs-cleaning`, `/clean` | Samme under `/api/auditoriums/...` |
+| `POST /api/bookings/reserve` med `seatCode`, kun medarbejdere | Samme sti, men med en liste `seats` (sæde-id + billettype), åben for alle |
+| `GET /api/bookings/showing/{id}` | `GET /api/bookings?showingId={id}` |
+| Rollen `EMPLOYEE` (bruger `employee`) | Rollerne Admin, MovieEditor, Clerk, Inspector, Operator (fx `mads` / `kode123`) |
+
+Stierne er flyttet ind under `/api`, fordi CORS kun er slået til for `/api/**`. Uden det blokerer browseren
+frontendens kald.
+
+Andre ændringer i forhold til `Færdit-Backend`:
+
+- "Findes ikke" giver 404 i stedet for 400 (`NotFoundException`), og 401/403 har en JSON-besked.
 - Film oprettes og rettes med `MovieRequest`, og `PUT` validerer ligesom `POST`.
-- `data.sql` er slettet. Roller og medarbejdere oprettes i `InitData`, så det også virker på MySQL
-  (Spring kører som standard kun `data.sql` på indlejrede databaser som H2).
-- Kunde-login med forkert adgangskode giver 401 i stedet for 400.
+- `data.sql` er slettet. Roller og medarbejdere oprettes i `InitData`, så det også virker på MySQL.
 - `ShowingResponse` har fået `endTime`, `capacity` og `availableSeats`.
-- `PUT /api/showings/{id}/cancel` returnerer nu forestillingen.
 - CORS-adressen står i `application.properties` (`kino.cors.allowed-origins`).
-- Damolas `GET /api/bookings/showing/{id}/seats` fra `main` er bevaret oven på den nye sædemodel.
 - Nyt: `Dockerfile` og en `app`-service i `compose.yaml`.
 
 ## 6. Test
 
-`mvn test` kører 102 tests uden database-server:
+`mvn test` kører 109 tests uden database-server:
 
 - Unit-tests med Mockito for hver service (fx `MovieServiceTest`, `AuditoriumServiceTest`, `EmployeeServiceTest`).
 - `MovieStatusTest` for premiere/coming soon-beregningen.
@@ -190,8 +229,9 @@ Den kører i GitHub Actions.
 
 Sig dem selv til eksamen, før censor finder dem.
 
-- **Kunder har ingen session.** `/api/users/login` tjekker kun adgangskoden. Booking-endpoints som pris, billet og
-  betaling er åbne for alle, der kender booking-id'et. I et rigtigt system ville man bruge Spring Security.
+- **Booking-endpoints er åbne.** Kunder har en session (`/api/users/profile`), men pris, billet og betaling
+  tjekker den ikke og er åbne for alle, der kender booking-id'et. Gæster uden konto skal også kunne se deres
+  billet, så login alene løser det ikke. I et rigtigt system ville man bruge Spring Security.
 - **Betaling er kun et flag** (`paid`). Der er ingen betalingsudbyder.
 - **Prisændringer slår igennem på gamle bookinger**, fordi en booking peger på billettypen og ikke gemmer prisen.
 - **`ddl-auto=create-drop`**: databasen nulstilles ved hver start. Fint til udvikling, ikke til drift.

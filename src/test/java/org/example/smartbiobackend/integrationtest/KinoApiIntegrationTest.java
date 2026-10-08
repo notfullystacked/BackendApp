@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -384,6 +385,69 @@ class KinoApiIntegrationTest {
 
         mockMvc.perform(post("/api/users/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"email\":\"lucas@mail.dk\",\"password\":\"forkert\"}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    // ---------- QR-kode, rengøring og kunde-session ----------
+
+    @Test
+    void ticketContainsAQrCodeAsBase64Png() throws Exception {
+        mockMvc.perform(get("/api/bookings/1/ticket"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.movieTitle").value("Jaws"))
+                // Alle PNG-filer starter med de samme bytes, som i Base64 bliver til "iVBORw0KGgo"
+                .andExpect(jsonPath("$.qrCode", startsWith("iVBORw0KGgo")));
+    }
+
+    @Test
+    void staffCanMarkAnAuditoriumAsNeedingCleaningAndCleanAgain() throws Exception {
+        MockHttpSession inspector = loginAs("emma");
+
+        mockMvc.perform(get("/api/auditoriums/1"))
+                .andExpect(jsonPath("$.cleaningStatus").value("CLEAN"));
+
+        mockMvc.perform(put("/api/auditoriums/1/needs-cleaning").session(inspector))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.cleaningStatus").value("NEEDS_CLEANING"));
+
+        mockMvc.perform(put("/api/auditoriums/1/clean").session(inspector))
+                .andExpect(jsonPath("$.cleaningStatus").value("CLEAN"));
+    }
+
+    @Test
+    void cleaningStatusRequiresLoginAndTheRightRole() throws Exception {
+        mockMvc.perform(put("/api/auditoriums/1/needs-cleaning"))
+                .andExpect(status().isUnauthorized());
+
+        // Oliver er Operator + MovieEditor og har ikke med rengøring at gøre
+        mockMvc.perform(put("/api/auditoriums/1/needs-cleaning").session(loginAs("oliver")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void customerProfileFollowsTheSession() throws Exception {
+        mockMvc.perform(get("/api/users/profile"))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(post("/api/users/register").contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                { "name": "Lucas", "email": "lucas@mail.dk", "password": "hemmelig123", "birthday": "2000-01-01" }
+                                """))
+                .andExpect(status().isCreated());
+
+        MvcResult login = mockMvc.perform(post("/api/users/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"lucas@mail.dk\",\"password\":\"hemmelig123\"}"))
+                .andExpect(status().isOk())
+                .andReturn();
+        MockHttpSession session = (MockHttpSession) login.getRequest().getSession(false);
+
+        mockMvc.perform(get("/api/users/profile").session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("lucas@mail.dk"));
+
+        mockMvc.perform(post("/api/users/logout").session(session))
+                .andExpect(status().isNoContent());
+        mockMvc.perform(get("/api/users/profile").session(session))
                 .andExpect(status().isUnauthorized());
     }
 }

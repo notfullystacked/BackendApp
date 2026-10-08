@@ -1,6 +1,8 @@
 package org.example.smartbiobackend.servicetest;
 
+import org.example.smartbiobackend.exception.NotFoundException;
 import org.example.smartbiobackend.model.Auditorium;
+import org.example.smartbiobackend.model.CleaningStatus;
 import org.example.smartbiobackend.model.Movie;
 import org.example.smartbiobackend.model.Seat;
 import org.example.smartbiobackend.model.Showing;
@@ -159,5 +161,28 @@ class AuditoriumServiceTest {
                 .thenReturn(List.of());
 
         assertFalse(auditoriumService.closeAuditorium(1).isActive());
+    }
+
+    // ---------- Rengøring ----------
+
+    @Test
+    void newAuditoriumIsClean() {
+        assertEquals(CleaningStatus.CLEAN, new Auditorium("Sal 1", 20, 12).getCleaningStatus());
+    }
+
+    @Test
+    void auditoriumCanBeMarkedAsNeedingCleaningAndAsCleanAgain() {
+        Auditorium auditorium = new Auditorium("Sal 1", 20, 12);
+        when(auditoriumRepository.findById(1)).thenReturn(Optional.of(auditorium));
+
+        assertEquals(CleaningStatus.NEEDS_CLEANING, auditoriumService.markNeedsCleaning(1).getCleaningStatus());
+        assertEquals(CleaningStatus.CLEAN, auditoriumService.markClean(1).getCleaningStatus());
+    }
+
+    @Test
+    void markCleaningOnAuditoriumThatDoesNotExist_GivesNotFound() {
+        when(auditoriumRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> auditoriumService.markNeedsCleaning(99));
     }
 }

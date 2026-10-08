@@ -2,6 +2,7 @@ package org.example.smartbiobackend.service;
 
 import org.example.smartbiobackend.exception.NotFoundException;
 import org.example.smartbiobackend.model.Auditorium;
+import org.example.smartbiobackend.model.CleaningStatus;
 import org.example.smartbiobackend.model.Seat;
 import org.example.smartbiobackend.model.Showing;
 import org.example.smartbiobackend.model.ShowingStatus;
@@ -121,6 +122,21 @@ public class AuditoriumService {
     public Auditorium openAuditorium(int auditoriumId) {
         Auditorium auditorium = getAuditorium(auditoriumId);
         auditorium.setActive(true);
+        return auditoriumRepository.save(auditorium);
+    }
+
+    // Rengøring: personalet markerer, at salen skal gøres ren, og bagefter at den er klar igen
+    @Transactional
+    public Auditorium markNeedsCleaning(int auditoriumId) {
+        Auditorium auditorium = getAuditorium(auditoriumId);
+        auditorium.setCleaningStatus(CleaningStatus.NEEDS_CLEANING);
+        return auditoriumRepository.save(auditorium);
+    }
+
+    @Transactional
+    public Auditorium markClean(int auditoriumId) {
+        Auditorium auditorium = getAuditorium(auditoriumId);
+        auditorium.setCleaningStatus(CleaningStatus.CLEAN);
         return auditoriumRepository.save(auditorium);
     }
 

@@ -65,4 +65,17 @@ public class AuditoriumController {
         roleGuard.require(http, RoleGuard.ADMIN);
         return auditoriumService.openAuditorium(auditoriumId);
     }
+
+    // Rengøring. Inspector er rollen for billetkontrol og rengøring. Clerk og Admin må også
+    @PutMapping("/{auditoriumId}/needs-cleaning")
+    public Auditorium markNeedsCleaning(@PathVariable("auditoriumId") int auditoriumId, HttpServletRequest http) {
+        roleGuard.require(http, RoleGuard.INSPECTOR, RoleGuard.CLERK);
+        return auditoriumService.markNeedsCleaning(auditoriumId);
+    }
+
+    @PutMapping("/{auditoriumId}/clean")
+    public Auditorium markClean(@PathVariable("auditoriumId") int auditoriumId, HttpServletRequest http) {
+        roleGuard.require(http, RoleGuard.INSPECTOR, RoleGuard.CLERK);
+        return auditoriumService.markClean(auditoriumId);
+    }
 }

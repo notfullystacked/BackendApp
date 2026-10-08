@@ -1,5 +1,6 @@
 package org.example.smartbiobackend.service;
 
+import org.example.smartbiobackend.exception.NotFoundException;
 import org.example.smartbiobackend.exception.UnauthorizedException;
 import org.example.smartbiobackend.model.User;
 import org.example.smartbiobackend.model.dto.LoginRequest;
@@ -48,5 +49,10 @@ public class UserService {
         }
 
         return user;
+    }
+
+    public User getById(int userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found: " + userId));
     }
 }
