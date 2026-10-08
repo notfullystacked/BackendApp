@@ -2,7 +2,9 @@
 
 # Dokumentation
 Dokumentationen kan findes i docs/ mappen.
-[tech stack](docs/techstack)
+[tech stack](docs/techstack.md)
+
+[Backend: oversigt, endpoints og forklaring](docs/backend-guide.md)
 
 # Baggrund
 - Lokal biograf med to sale

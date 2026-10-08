@@ -1,5 +1,6 @@
 package org.example.smartbiobackend.service;
 
+import org.example.smartbiobackend.exception.NotFoundException;
 import org.example.smartbiobackend.model.BookingSeat;
 import org.example.smartbiobackend.model.TicketType;
 import org.example.smartbiobackend.repository.BookingSeatRepository;
@@ -35,7 +36,7 @@ public class PriceService {
         List<BookingSeat> bookingSeats = bookingSeatRepository.findByBookingId(bookingId);
 
         if (bookingSeats.isEmpty()) {
-            throw new IllegalArgumentException("Booking not found: " + bookingId);
+            throw new NotFoundException("Booking not found: " + bookingId);
         }
 
         List<TicketType> tickets = new ArrayList<>();

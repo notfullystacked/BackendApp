@@ -1,5 +1,6 @@
 package org.example.smartbiobackend.servicetest;
 
+import org.example.smartbiobackend.exception.UnauthorizedException;
 import org.example.smartbiobackend.model.User;
 import org.example.smartbiobackend.model.dto.LoginRequest;
 import org.example.smartbiobackend.model.dto.RegisterRequest;
@@ -88,7 +89,7 @@ public class UserServiceTest {
     void loginWithWrongEmail_IsRejected() {
         when(userRepository.findByEmail("ukendt@mail.dk")).thenReturn(Optional.empty());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class,
                 () -> userService.login(new LoginRequest("ukendt@mail.dk", "hemmelig123")));
 
         assertEquals("Invalid email or password", exception.getMessage());
@@ -100,7 +101,7 @@ public class UserServiceTest {
         user.setPassword(passwordEncoder.encode("hemmelig123"));
         when(userRepository.findByEmail("lucas@mail.dk")).thenReturn(Optional.of(user));
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class,
                 () -> userService.login(new LoginRequest("lucas@mail.dk", "forkert")));
 
         assertEquals("Invalid email or password", exception.getMessage());

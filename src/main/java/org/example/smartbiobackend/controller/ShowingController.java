@@ -6,9 +6,11 @@ import org.example.smartbiobackend.model.dto.ShowingRequest;
 import org.example.smartbiobackend.model.dto.ShowingResponse;
 import org.example.smartbiobackend.security.RoleGuard;
 import org.example.smartbiobackend.service.ShowingService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -23,10 +25,20 @@ public class ShowingController {
         this.roleGuard = roleGuard;
     }
 
-    // GET /api/showings – programmet de næste 3 måneder
+    // GET /api/showings – programmet de næste 3 måneder.
+    // Kan filtreres: GET /api/showings?movieId=1&date=2026-11-01
     @GetMapping
-    public List<ShowingResponse> getUpcoming() {
-        return showingService.getUpcoming();
+    public List<ShowingResponse> getUpcoming(
+            @RequestParam(name = "movieId", required = false) Integer movieId,
+            @RequestParam(name = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return showingService.getUpcoming(movieId, date);
+    }
+
+    // Medarbejdere: alle forestillinger, også gamle og aflyste
+    @GetMapping("/all")
+    public List<ShowingResponse> getAll(HttpServletRequest http) {
+        roleGuard.require(http);
+        return showingService.getAll();
     }
 
     @GetMapping("/{showingId}")
@@ -56,8 +68,8 @@ public class ShowingController {
     }
 
     @PutMapping("/{showingId}/cancel")
-    public void cancelShowing(@PathVariable("showingId") int showingId, HttpServletRequest http) {
+    public ShowingResponse cancelShowing(@PathVariable("showingId") int showingId, HttpServletRequest http) {
         roleGuard.require(http, RoleGuard.MOVIE_EDITOR);
-        showingService.cancelShowing(showingId);
+        return showingService.cancelShowing(showingId);
     }
 }

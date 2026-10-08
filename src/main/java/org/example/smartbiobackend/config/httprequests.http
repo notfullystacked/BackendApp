@@ -1,25 +1,203 @@
+### Kør dem i IntelliJ med den grønne pil. IntelliJ husker session-cookien, så log ind først (afsnit A).
+### Samme kald kan laves i Postman: husk Body -> raw -> JSON.
+###
 ### Testdata fra InitData:
-### Sal 1 (20 rækker x 12 sæder, sæde-id 1-240), Sal 2 (25 x 16, sæde-id 241-640)
-### Forestilling 1 = Jaws kl. 17, 2 = Jaws kl. 20, 3 = The Notebook, 4 = Mad Max
+### Sale: 1 = Sal 1 (20 x 12, sæde-id 1-240), 2 = Sal 2 (25 x 16, sæde-id 241-640)
+### Film: 1 = Jaws, 2 = The Notebook, 3 = Mad Max (premiere), 4 = Spirited Away, 5 = Alien (begge coming soon)
+### Forestillinger: 1 = Jaws kl. 17, 2 = Jaws kl. 20, 3 = The Notebook, 4 = Mad Max
 ### Billettyper: 1 = Voksen 120, 2 = Barn 80, 3 = Pensionist 95
 ### Booking 1 = David, sæde 1 (række 1, sæde 1) til forestilling 2
+### Medarbejdere (kode123): mads = Admin + Clerk, sofie = Clerk, oliver = Operator + MovieEditor, emma = Inspector
 
-### 1. Programmet de næste 3 måneder
-GET http://localhost:8080/api/showings
 
-### 2. Film på programmet
+### ============ A. Login (medarbejder) ============
+
+### A1. Log ind som admin (forventet: 200 med navn og roller)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{ "username": "mads", "password": "kode123" }
+
+### A2. Hvem er jeg? (forventet: 200, eller 401 hvis man ikke er logget ind)
+GET http://localhost:8080/api/auth/me
+
+### A3. Log ud (forventet: 204)
+POST http://localhost:8080/api/auth/logout
+
+### A4. Forkert adgangskode (forventet: 401)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{ "username": "mads", "password": "forkert" }
+
+
+### ============ B. Film: se (ISSUE-12) ============
+
+### B1. Film på programmet
 GET http://localhost:8080/api/movies
 
-### 3. Billettyper
-GET http://localhost:8080/api/ticket-types
+### B2. Filtrér på genre og søgetekst
+GET http://localhost:8080/api/movies?genre=HORROR&search=jaws
 
-### 4. Sædeoversigt for Jaws kl. 20 (sæde 1 er booket)
+### B3. Én film (forventet: 200)
+GET http://localhost:8080/api/movies/1
+
+### B4. Film der ikke findes (forventet: 404 med {"error": ...})
+GET http://localhost:8080/api/movies/9999
+
+### B5. Kommende forestillinger for én film
+GET http://localhost:8080/api/movies/1/showings
+
+### B6. Alle film, også dem der er taget af programmet (kræver login)
+GET http://localhost:8080/api/movies/all
+
+### B7. Genrer til en dropdown
+GET http://localhost:8080/api/movies/genres
+
+
+### ============ C. Film: opret, ret, fjern (ISSUE-8, kræver MovieEditor eller Admin) ============
+
+### C1. Opret film (forventet: 201, id 6). runTime er i sekunder
+POST http://localhost:8080/api/movies
+Content-Type: application/json
+
+{
+  "name": "Inception",
+  "runTime": 8880,
+  "description": "En tyv stjæler hemmeligheder ved at trænge ind i folks drømme.",
+  "imdbRating": 8.8,
+  "director": "Christopher Nolan",
+  "releaseYear": 2010,
+  "releaseDate": "2010-07-16",
+  "ageRestriction": 11,
+  "genre": "SCIFI",
+  "premiereDate": "2026-12-01",
+  "posterUrl": null
+}
+
+### C2. Ret film 6 (forventet: 200). PUT erstatter alle felter, så send dem alle
+PUT http://localhost:8080/api/movies/6
+Content-Type: application/json
+
+{
+  "name": "Inception",
+  "runTime": 8880,
+  "description": "Ny beskrivelse",
+  "imdbRating": 8.8,
+  "director": "Christopher Nolan",
+  "releaseYear": 2010,
+  "releaseDate": "2010-07-16",
+  "ageRestriction": 15,
+  "genre": "SCIFI",
+  "premiereDate": "2026-12-01"
+}
+
+### C3. Ret uden navn (forventet: 400)
+PUT http://localhost:8080/api/movies/6
+Content-Type: application/json
+
+{ "runTime": 8880 }
+
+### C4. Ret film der ikke findes (forventet: 404)
+PUT http://localhost:8080/api/movies/9999
+Content-Type: application/json
+
+{ "name": "Findes ikke", "runTime": 6000 }
+
+### C5. Slet film 6 helt (forventet: 204, fordi den ingen forestillinger har)
+DELETE http://localhost:8080/api/movies/6
+
+### C6. Slet Jaws (forventet: 409, fordi den har forestillinger)
+DELETE http://localhost:8080/api/movies/1
+
+### C7. Tag The Notebook af programmet (forventet: 200, active false, og dens forestillinger aflyses)
+PUT http://localhost:8080/api/movies/2/deactivate
+
+### C8. Sæt den på programmet igen
+PUT http://localhost:8080/api/movies/2/activate
+
+
+### ============ D. Sale og kapacitet (ISSUE-9) ============
+
+### D1. Alle sale med capacity (forventet: 240 og 400)
+GET http://localhost:8080/api/auditoriums
+
+### D2. Opret en ny sal (kræver Admin, forventet: 201 med capacity 80). Sæderne oprettes automatisk
+POST http://localhost:8080/api/auditoriums
+Content-Type: application/json
+
+{ "name": "Sal 3", "rowCount": 10, "seatsPerRow": 8 }
+
+### D3. Gør Sal 3 større (forventet: capacity 120)
+PUT http://localhost:8080/api/auditoriums/3
+Content-Type: application/json
+
+{ "name": "Sal 3", "rowCount": 12, "seatsPerRow": 10 }
+
+### D4. Sæderne i en sal
+GET http://localhost:8080/api/auditoriums/3/seats
+
+### D5. Luk Sal 3 (forventet: 200, active false). Sal 1 kan ikke lukkes, fordi den har forestillinger (409)
+PUT http://localhost:8080/api/auditoriums/3/close
+
+### D6. Åbn den igen
+PUT http://localhost:8080/api/auditoriums/3/open
+
+
+### ============ E. Promovering (ISSUE-10) ============
+
+### E1. Fremhævede film til forsiden
+GET http://localhost:8080/api/movies/promoted
+
+### E2. Coming soon (premieren ligger i fremtiden)
+GET http://localhost:8080/api/movies/coming-soon
+
+### E3. Premierefilm (premiere inden for de seneste 14 dage)
+GET http://localhost:8080/api/movies/premieres
+
+### E4. Fremhæv Jaws (kræver MovieEditor eller Admin)
+PUT http://localhost:8080/api/movies/1/promote
+
+### E5. Fjern fremhævningen igen
+PUT http://localhost:8080/api/movies/1/unpromote
+
+
+### ============ F. Forestillinger ============
+
+### F1. Programmet de næste 3 måneder (capacity og availableSeats er med)
+GET http://localhost:8080/api/showings
+
+### F2. Filtrér på film og dato (ret datoen til i morgen)
+GET http://localhost:8080/api/showings?movieId=1&date=2026-10-09
+
+### F3. Sædeoversigt for Jaws kl. 20 (sæde 1 er booket)
 GET http://localhost:8080/api/showings/2/seats
 
-### 5. Pris for booking 1 (forventet: total 120)
-GET http://localhost:8080/api/bookings/1/price
+### F4. Planlæg en ekstra forestilling (kræver MovieEditor; ret datoen til en dag inden for 3 måneder)
+POST http://localhost:8080/api/showings
+Content-Type: application/json
 
-### 6. Book to sæder som gæst: en voksen og et barn (forventet: 201, seatCodes ["1-2","1-3"])
+{ "movieId": 2, "auditoriumId": 1, "startTime": "2026-11-01T14:00:00" }
+
+### F5. Overlap i samme sal (forventet: 409, hvis F4 er kørt)
+POST http://localhost:8080/api/showings
+Content-Type: application/json
+
+{ "movieId": 1, "auditoriumId": 1, "startTime": "2026-11-01T15:00:00" }
+
+### F6. Aflys forestilling 4
+PUT http://localhost:8080/api/showings/4/cancel
+
+### F7. Alle forestillinger, også aflyste (kræver login)
+GET http://localhost:8080/api/showings/all
+
+
+### ============ G. Booking ============
+
+### G1. Billettyper
+GET http://localhost:8080/api/ticket-types
+
+### G2. Book to sæder som gæst: en voksen og et barn (forventet: 201, seatCodes ["1-2","1-3"])
 POST http://localhost:8080/api/bookings/reserve
 Content-Type: application/json
 
@@ -34,7 +212,7 @@ Content-Type: application/json
   ]
 }
 
-### 7. Book et sæde der allerede er taget (forventet: 409)
+### G3. Book et sæde der allerede er taget (forventet: 409)
 POST http://localhost:8080/api/bookings/reserve
 Content-Type: application/json
 
@@ -45,7 +223,7 @@ Content-Type: application/json
   "seats": [ { "seatId": 1, "ticketTypeId": 1 } ]
 }
 
-### 8. Book et sæde fra Sal 2 til en forestilling i Sal 1 (forventet: 400)
+### G4. Book et sæde fra Sal 2 til en forestilling i Sal 1 (forventet: 400)
 POST http://localhost:8080/api/bookings/reserve
 Content-Type: application/json
 
@@ -56,82 +234,98 @@ Content-Type: application/json
   "seats": [ { "seatId": 300, "ticketTypeId": 1 } ]
 }
 
-### 9. Pris for den nye booking (forventet: total 200)
+### G5. Detaljer, pris og billet for booking 2
+GET http://localhost:8080/api/bookings/2
+
+###
 GET http://localhost:8080/api/bookings/2/price
 
-### 10. Betal den
-POST http://localhost:8080/api/bookings/2/pay
-
-### 11. Billet
+###
 GET http://localhost:8080/api/bookings/2/ticket
 
-### 12. Opret forestilling uden login (forventet: 401)
-POST http://localhost:8080/api/showings
-Content-Type: application/json
+### G6. Betal booking 2 (forventet: 200. Anden gang: 409)
+POST http://localhost:8080/api/bookings/2/pay
 
-{ "movieId": 2, "auditoriumId": 1, "startTime": "2030-01-10T19:00:00" }
+### G7. Billetkontrol (kræver Inspector, Clerk eller Admin. Forventet: 200. Anden gang: 409)
+PUT http://localhost:8080/api/bookings/2/check-in
 
-### 13. Log ind som medarbejder (Mads er Clerk og Admin)
-POST http://localhost:8080/api/auth/login
-Content-Type: application/json
+### G8. Ekspedienten finder bookinger på email eller forestilling (kræver login)
+GET http://localhost:8080/api/bookings?email=anna@email.dk
 
-{ "username": "mads", "password": "kode123" }
+###
+GET http://localhost:8080/api/bookings?showingId=2
 
-### 14. Opret forestilling (forventet: 201)
-POST http://localhost:8080/api/showings
-Content-Type: application/json
+### G9. Annullér booking 2. Kunder skal sende deres email med, medarbejdere behøver ikke (forventet: 204)
+DELETE http://localhost:8080/api/bookings/2?email=anna@email.dk
 
-{ "movieId": 2, "auditoriumId": 1, "startTime": "2030-01-10T19:00:00" }
 
-### 15. Opret overlappende forestilling i samme sal (forventet: 409)
-POST http://localhost:8080/api/showings
-Content-Type: application/json
+### ============ H. Kunder ============
 
-{ "movieId": 1, "auditoriumId": 1, "startTime": "2030-01-10T20:00:00" }
-
-### 16. Aflys forestilling 1
-PUT http://localhost:8080/api/showings/1/cancel
-
-### 17. Opret ny film
-POST http://localhost:8080/api/movies
-Content-Type: application/json
-
-{
-  "name": "Up",
-  "runTime": 5760,
-  "description": "Flying house",
-  "director": "Pete Docter",
-  "releaseYear": 2009,
-  "releaseDate": "2009-05-29",
-  "ageRestriction": 0,
-  "genre": "ANIMATION"
-}
-
-### 18. Tag Mad Max af programmet (dens fremtidige forestillinger aflyses)
-PUT http://localhost:8080/api/movies/3/deactivate
-
-### 19. Opret ny sal - sæderne laves automatisk
-POST http://localhost:8080/api/auditoriums
-Content-Type: application/json
-
-{ "name": "Sal 3", "rowCount": 10, "seatsPerRow": 8 }
-
-### 20. Registrer en ny kunde (forventet: 201)
+### H1. Registrér en kunde (forventet: 201 med id, navn og email, uden password)
 POST http://localhost:8080/api/users/register
 Content-Type: application/json
 
-{
-  "name": "Lucas",
-  "email": "lucas@mail.dk",
-  "password": "hemmelig123",
-  "birthday": "2000-01-01"
-}
+{ "name": "Lucas", "email": "lucas@mail.dk", "password": "hemmelig123", "birthday": "2000-01-01" }
 
-### 21. Log ind som kunde (forventet: 200)
+### H2. Kunde-login (forventet: 200. Forkert adgangskode: 401)
 POST http://localhost:8080/api/users/login
 Content-Type: application/json
 
+{ "email": "lucas@mail.dk", "password": "hemmelig123" }
+
+### H3. Davids bookinger
+GET http://localhost:8080/api/users/1/bookings
+
+
+### ============ I. Medarbejdere (kræver Admin) ============
+
+### I1. Alle medarbejdere
+GET http://localhost:8080/api/employees
+
+### I2. Roller der kan vælges
+GET http://localhost:8080/api/employees/roles
+
+### I3. Ansæt en ny medarbejder (forventet: 201)
+POST http://localhost:8080/api/employees
+Content-Type: application/json
+
 {
-  "email": "lucas@mail.dk",
-  "password": "hemmelig123"
+  "name": "Noah",
+  "username": "noah",
+  "email": "noah@kino.dk",
+  "password": "kode123",
+  "phoneNr": "12345678",
+  "roles": ["Clerk"]
 }
+
+### I4. Ret medarbejder 5. Uden "password" beholdes den gamle adgangskode
+PUT http://localhost:8080/api/employees/5
+Content-Type: application/json
+
+{
+  "name": "Noah",
+  "username": "noah",
+  "email": "noah@kino.dk",
+  "roles": ["Clerk", "MovieEditor"]
+}
+
+### I5. Slet medarbejder 5 (forventet: 204. Man kan ikke slette sig selv eller den sidste Admin)
+DELETE http://localhost:8080/api/employees/5
+
+### I6. Opret en ny rolle
+POST http://localhost:8080/api/employees/roles
+Content-Type: application/json
+
+{ "roleName": "Cleaner" }
+
+### I7. Ny billettype og ny pris
+POST http://localhost:8080/api/ticket-types
+Content-Type: application/json
+
+{ "ticketName": "Studerende", "price": 90 }
+
+###
+PUT http://localhost:8080/api/ticket-types/1
+Content-Type: application/json
+
+{ "ticketName": "Voksen", "price": 130 }

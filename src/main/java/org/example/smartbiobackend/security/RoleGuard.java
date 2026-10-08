@@ -17,7 +17,9 @@ public class RoleGuard {
     // Samme navne som i data.sql
     public static final String ADMIN = "Admin";
     public static final String MOVIE_EDITOR = "MovieEditor";
-    public static final String CLERK = "Clerk";
+    public static final String CLERK = "Clerk";           // billetsalg og kiosk
+    public static final String OPERATOR = "Operator";     // kører filmene
+    public static final String INSPECTOR = "Inspector";   // billetkontrol og rengøring
 
     private static final String EMPLOYEE_ID = "employeeId"; // samme nøgle som AuthController
 
@@ -45,5 +47,11 @@ public class RoleGuard {
             throw new ForbiddenException("Du har ikke adgang til dette");
         }
         return employee;
+    }
+
+    // true hvis der er en medarbejder logget ind. Kaster ikke en fejl, i modsætning til require
+    public boolean isLoggedIn(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        return session != null && session.getAttribute(EMPLOYEE_ID) instanceof Integer;
     }
 }

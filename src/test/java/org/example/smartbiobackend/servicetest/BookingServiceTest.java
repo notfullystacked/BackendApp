@@ -1,5 +1,7 @@
 package org.example.smartbiobackend.servicetest;
 
+import org.example.smartbiobackend.exception.ForbiddenException;
+import org.example.smartbiobackend.exception.NotFoundException;
 import org.example.smartbiobackend.model.*;
 import org.example.smartbiobackend.model.dto.BookingRequest;
 import org.example.smartbiobackend.model.dto.BookingResponse;
@@ -108,5 +110,63 @@ public class BookingServiceTest {
                 List.of(new SeatTicket(7, 2), new SeatTicket(7, 2)));
 
         assertThrows(IllegalArgumentException.class, () -> bookingService.processBooking(request));
+    }
+
+    // ---------- Annullér og check-in ----------
+
+    private Booking existingBooking() {
+        Showing showing = new Showing(new Movie("Jaws"), new Auditorium("Sal 1", 20, 12), LocalDateTime.now().plusDays(1));
+        Booking booking = new Booking(showing, "Anna", "anna@mail.dk");
+        when(bookingRepository.findById(3)).thenReturn(Optional.of(booking));
+        return booking;
+    }
+
+    @Test
+    void customerCanCancelWithTheRightEmail() {
+        Booking booking = existingBooking();
+
+        bookingService.cancelBooking(3, "ANNA@mail.dk", false);   // store/små bogstaver er ligegyldige
+
+        verify(bookingRepository).delete(booking);
+    }
+
+    @Test
+    void customerCannotCancelWithTheWrongEmail() {
+        existingBooking();
+
+        assertThrows(ForbiddenException.class, () -> bookingService.cancelBooking(3, "en.anden@mail.dk", false));
+        verify(bookingRepository, never()).delete(any());
+    }
+
+    @Test
+    void employeeCanCancelWithoutEmail() {
+        Booking booking = existingBooking();
+
+        bookingService.cancelBooking(3, null, true);
+
+        verify(bookingRepository).delete(booking);
+    }
+
+    @Test
+    void cancelBookingThatDoesNotExist_GivesNotFound() {
+        when(bookingRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> bookingService.cancelBooking(99, null, true));
+    }
+
+    @Test
+    void checkInRequiresThatTheBookingIsPaid() {
+        existingBooking();
+
+        assertThrows(IllegalStateException.class, () -> bookingService.checkIn(3));
+    }
+
+    @Test
+    void ticketCanOnlyBeCheckedInOnce() {
+        Booking booking = existingBooking();
+        booking.setPaid(true);
+
+        assertTrue(bookingService.checkIn(3).checkedIn());
+        assertThrows(IllegalStateException.class, () -> bookingService.checkIn(3));
     }
 }

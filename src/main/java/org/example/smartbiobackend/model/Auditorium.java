@@ -15,6 +15,9 @@ public class Auditorium {
     private int rowCount;
     private int seatsPerRow;
 
+    // false = salen er lukket (fx ombygning), så der ikke kan planlægges nye forestillinger i den
+    private boolean active = true;
+
     public Auditorium() {
     }
 
@@ -39,6 +42,15 @@ public class Auditorium {
 
     public int getSeatsPerRow() { return seatsPerRow; }
     public void setSeatsPerRow(int seatsPerRow) { this.seatsPerRow = seatsPerRow; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
+
+    // ISSUE-9: kapaciteten regnes ud fra data i databasen, ikke hardcoded.
+    // Kommer med i JSON som "capacity" (Jackson kalder getteren), men er ikke en kolonne
+    public int getCapacity() {
+        return rowCount * seatsPerRow;
+    }
 
     @Override
     public String toString() {

@@ -37,3 +37,8 @@ Booking-body:
 ```
 
 Se `config/httprequests.http` for eksempler på alle kald. Medarbejder-login: mads / kode123.
+
+## Senere ændringer
+Backenden er siden bygget færdig (film, promovering, kapacitet, bookinger, medarbejdere, fejlkoder).
+Den aktuelle oversigt over endpoints og ændringer står i [docs/backend-guide.md](docs/backend-guide.md).
+Bemærk: film oprettes/rettes nu med `MovieRequest`, "findes ikke" giver 404, og `data.sql` er erstattet af `InitData`.

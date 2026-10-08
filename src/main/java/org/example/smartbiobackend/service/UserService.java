@@ -1,5 +1,6 @@
 package org.example.smartbiobackend.service;
 
+import org.example.smartbiobackend.exception.UnauthorizedException;
 import org.example.smartbiobackend.model.User;
 import org.example.smartbiobackend.model.dto.LoginRequest;
 import org.example.smartbiobackend.model.dto.RegisterRequest;
@@ -21,6 +22,15 @@ public class UserService {
     }
 
     public User register (RegisterRequest request) {
+        if (request.name() == null || request.name().isBlank()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+        if (request.email() == null || !request.email().contains("@")) {
+            throw new IllegalArgumentException("A valid email is required");
+        }
+        if (request.password() == null || request.password().length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters");
+        }
         if (userRepository.existsByEmail(request.email())){
             throw new IllegalStateException("Email already in use");
         }
@@ -31,10 +41,10 @@ public class UserService {
 
     public User login (LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.email()).orElseThrow(
-                () -> new IllegalArgumentException("Invalid email or password"));
+                () -> new UnauthorizedException("Invalid email or password"));
 
         if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid email or password");
+            throw new UnauthorizedException("Invalid email or password");
         }
 
         return user;

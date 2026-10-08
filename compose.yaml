@@ -1,3 +1,5 @@
+# Kun databasen (som hidtil):        docker compose up -d
+# Database + backend i Docker:        docker compose --profile app up -d --build
 services:
   db:
     container_name: kinodb_mysql
@@ -9,11 +11,31 @@ services:
       MYSQL_DATABASE: kinoDB
       MYSQL_USER: user
       MYSQL_PASSWORD: secret
-      SPRING_PROFILES_ACTIVE: docker
     ports:
       - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
+    # Så backenden kan vente, til MySQL faktisk svarer
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot", "--silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # Backenden. Har en profil, så den kun startes, når man beder om det med --profile app
+  app:
+    profiles: ["app"]
+    container_name: kino_backend
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      # Inde i Docker-netværket hedder databasen "db" og lytter på 3306 (ikke localhost:3307)
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/kinoDB?createDatabaseIfNotExist=true
+    ports:
+      - "8080:8080"
 
 volumes:
   db_data:

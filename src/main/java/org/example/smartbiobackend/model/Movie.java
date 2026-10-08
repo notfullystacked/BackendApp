@@ -19,7 +19,8 @@ public class Movie {
 
     // in seconds
     private int runTime;
-@Column(length = 2000)
+
+    @Column(length = 2000)
     private String description;
 
     private double imdbRating;
@@ -37,6 +38,18 @@ public class Movie {
 
     // false = taget af programmet
     private boolean active = true;
+
+    // Første dag filmen vises i Kino. Ligger den i fremtiden, er filmen "coming soon"
+    private LocalDate premiereDate;
+
+    // true = filmen fremhæves på forsiden (ISSUE-10)
+    private boolean promoted;
+
+    // Link til plakat, så frontenden kan vise et billede
+    private String posterUrl;
+
+    // Hvor mange dage efter premieren en film stadig tæller som premierefilm
+    public static final int PREMIERE_DAYS = 14;
 
     // Constructor without imdb rating for now
     public Movie(int id, String name, int runTime, String description, String director, int releaseYear,
@@ -143,6 +156,38 @@ public class Movie {
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
 
+    public LocalDate getPremiereDate() { return premiereDate; }
+    public void setPremiereDate(LocalDate premiereDate) { this.premiereDate = premiereDate; }
+
+    public boolean isPromoted() { return promoted; }
+    public void setPromoted(boolean promoted) { this.promoted = promoted; }
+
+    public String getPosterUrl() { return posterUrl; }
+    public void setPosterUrl(String posterUrl) { this.posterUrl = posterUrl; }
+
+    // Kommer med i JSON som "status", fordi Jackson kalder alle getters.
+    // Det er ikke en kolonne i databasen: JPA kigger kun på felterne, og der er intet felt, der hedder status
+    public MovieStatus getStatus() {
+        return getStatus(LocalDate.now());
+    }
+
+    // Samme beregning med en valgfri dato, så den kan unit-testes uden at afhænge af dagen i dag
+    public MovieStatus getStatus(LocalDate today) {
+        if (!active) {
+            return MovieStatus.ARCHIVED;
+        }
+        if (premiereDate == null) {
+            return MovieStatus.NOW_SHOWING;
+        }
+        if (premiereDate.isAfter(today)) {
+            return MovieStatus.COMING_SOON;
+        }
+        if (today.isBefore(premiereDate.plusDays(PREMIERE_DAYS))) {
+            return MovieStatus.PREMIERE;
+        }
+        return MovieStatus.NOW_SHOWING;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -157,6 +202,8 @@ public class Movie {
                 ", ageRestriction=" + ageRestriction +
                 ", genre=" + genre +
                 ", active=" + active +
+                ", premiereDate=" + premiereDate +
+                ", promoted=" + promoted +
                 '}';
     }
 }

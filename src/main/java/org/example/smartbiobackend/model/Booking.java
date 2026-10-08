@@ -1,6 +1,7 @@
 package org.example.smartbiobackend.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,11 @@ public class Booking {
 
     private boolean paid;
 
+    // Sættes af billetkontrollen, når kunden møder op
+    private boolean checkedIn;
+
+    private LocalDateTime createdAt = LocalDateTime.now();
+
     public Booking() {
     }
 
@@ -60,6 +66,11 @@ public class Booking {
 
     public boolean isPaid() { return paid; }
     public void setPaid(boolean paid) { this.paid = paid; }
+
+    public boolean isCheckedIn() { return checkedIn; }
+    public void setCheckedIn(boolean checkedIn) { this.checkedIn = checkedIn; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
 
     @Override
     public String toString() {

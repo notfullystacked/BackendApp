@@ -4,6 +4,7 @@ import org.example.smartbiobackend.controller.UserController;
 import org.example.smartbiobackend.model.User;
 import org.example.smartbiobackend.model.dto.LoginRequest;
 import org.example.smartbiobackend.model.dto.RegisterRequest;
+import org.example.smartbiobackend.service.BookingService;
 import org.example.smartbiobackend.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,10 @@ class UserControllerTest {
 
     @MockitoBean
     private UserService userService;
+
+    // UserController bruger også BookingService (kundens egne bookinger)
+    @MockitoBean
+    private BookingService bookingService;
 
     @Test
     void registerReturnsCreatedWithoutPassword() throws Exception {

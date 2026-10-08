@@ -1,5 +1,6 @@
 package org.example.smartbiobackend.servicetest;
 
+import org.example.smartbiobackend.exception.NotFoundException;
 import org.example.smartbiobackend.model.Booking;
 import org.example.smartbiobackend.repository.BookingRepository;
 import org.example.smartbiobackend.service.PaymentService;
@@ -44,7 +45,7 @@ public class PaymentServiceTest {
     void payingBookingDoesNotExist_IsRejected() {
         when(bookingRepository.findById(99)).thenReturn(Optional.empty());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> paymentService.payForBooking(99));
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> paymentService.payForBooking(99));
 
         assertEquals("Booking not found: 99", exception.getMessage());
     }
