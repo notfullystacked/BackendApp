@@ -4,6 +4,9 @@ WORKDIR /app
 COPY .mvn/ .mvn/
 COPY mvnw pom.xml ./
 RUN chmod +x mvnw
+# Hent afhængighederne før kildekoden kopieres ind. Så genbruger Docker dette lag,
+# så længe pom.xml er uændret, og builds går meget hurtigere
+RUN ./mvnw -q dependency:go-offline
 COPY src/ src/
 # Testene springes over her. De køres i GitHub Actions (se .github/workflows)
 RUN ./mvnw -q -DskipTests package
