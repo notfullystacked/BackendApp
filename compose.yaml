@@ -1,5 +1,8 @@
-# Kun databasen (som hidtil):        docker compose up -d
-# Database + backend i Docker:        docker compose --profile app up -d --build
+# Kun databasen (fx naar backenden koeres i IntelliJ):   docker compose up -d
+# Hele systemet (database + backend + frontend):         docker compose --profile app up -d --build
+#   Kraever at FrontendApp ligger ved siden af BackendApp (fx IdeaProjects/BackendApp og IdeaProjects/FrontendApp)
+#   Frontend:  http://localhost:3000      Backend:  http://localhost:8080/api/...
+#   Paa VM'en saettes FRONTEND_PORT=80, saa siden ligger paa http://<VM-IP>
 services:
   db:
     container_name: kinodb_mysql
@@ -11,31 +14,48 @@ services:
       MYSQL_DATABASE: kinoDB
       MYSQL_USER: user
       MYSQL_PASSWORD: secret
+    # Sikkerhed: kun bundet til 127.0.0.1, saa databasen IKKE kan naas fra andre maskiner.
+    # Backenden i Docker taler med databasen over Docker-netvaerket (db:3306) og bruger ikke denne port.
     ports:
-      - "3307:3306"
+      - "127.0.0.1:3307:3306"
     volumes:
       - db_data:/var/lib/mysql
-    # Så backenden kan vente, til MySQL faktisk svarer
+    # Saa backenden kan vente, til MySQL faktisk svarer
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot", "--silent"]
       interval: 5s
       timeout: 5s
       retries: 20
 
-  # Backenden. Har en profil, så den kun startes, når man beder om det med --profile app
+  # Backenden. Har en profil, saa den kun startes, naar man beder om det med --profile app
   app:
     profiles: ["app"]
     container_name: kino_backend
     build: .
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      # Inde i Docker-netværket hedder databasen "db" og lytter på 3306 (ikke localhost:3307)
+      # Inde i Docker-netvaerket hedder databasen "db" og lytter paa 3306 (ikke localhost:3307)
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/kinoDB?createDatabaseIfNotExist=true
     ports:
       - "8080:8080"
+
+  # Frontenden (nginx + HTML/CSS/JS) bygges fra FrontendApp-repoet ved siden af dette repo.
+  # nginx sender /api/... videre til backenden paa Docker-netvaerket, saa browseren kun ser een adresse.
+  frontend:
+    profiles: ["app"]
+    container_name: kino_frontend
+    build: ../FrontendApp
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      BACKEND_URL: http://app:8080
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
 
 volumes:
   db_data:
