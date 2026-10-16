@@ -1,0 +1,53 @@
+# Compiler og tester Java-koden ved push til main og ved pull requests.
+# Erstatter build-and-test.yml (opgaven kraever navnet java.yaml).
+#
+# Supply-chain-sikkerhed: actions er pinnet til en fast commit-hash i stedet for et tag som "v4".
+# Et tag kan flyttes til ny (evt. ondsindet) kode, en commit-hash kan ikke. Kommentaren viser versionen.
+name: Java CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up JDK 25 (med Maven-cache)
+        uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a # v5.5.0
+        with:
+          java-version: '25'
+          distribution: 'oracle'
+          cache: maven            # gemmer ~/.m2, saa dependencies ikke hentes ved hver koersel
+
+      # 1. Start kun MySQL fra compose.yaml (backend og frontend har profilen "app" og startes ikke her)
+      - name: Start MySQL
+        run: docker compose up -d db
+
+      # 2. Vent til MySQL svarer
+      - name: Wait for MySQL to be ready
+        run: |
+          until docker exec kinodb_mysql mysqladmin ping -h "127.0.0.1" --silent; do
+            echo "Waiting for MySQL container..."
+            sleep 2
+          done
+
+      # 3. Compile og koer alle tests mod MySQL (profilen "docker")
+      - name: Build and test with Maven
+        run: |
+          chmod +x mvnw
+          ./mvnw -B test -Dspring.profiles.active=docker
+
+      - name: Stop MySQL
+        if: always()
+        run: docker compose down
